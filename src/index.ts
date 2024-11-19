@@ -1,5 +1,5 @@
-import { run, HandlerContext } from "@xmtp/message-kit";
+import { run } from "@xmtp/message-kit";
 
-run(async (context: HandlerContext) => {
+run(async (context) => {
   await context.send(`gm`);
 });
