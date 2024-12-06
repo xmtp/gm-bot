@@ -1,5 +1,5 @@
-import { run } from "@xmtp/message-kit";
+import { run, XMTPContext } from "@xmtp/message-kit";
 
-run(async (context) => {
+run(async (context: XMTPContext) => {
   await context.send(`gm`);
 });
