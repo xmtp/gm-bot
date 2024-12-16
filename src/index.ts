@@ -1,12 +1,15 @@
-import { run, Agent, XMTPContext } from "@xmtp/message-kit";
+import { run, Agent } from "@xmtp/message-kit";
 
 const agent: Agent = {
-  name: "gm-bot",
-  description: "A simple GM bot",
-  tag: "@gm",
-  skills: [],
-  onMessage: async (context: XMTPContext) => {
-    await context.send(`gm`);
+  name: "Gm Bot",
+  tag: "@bot",
+  description: "Gm bot.",
+  onMessage: async (context) => {
+    const { group } = context;
+
+    if (!group) {
+      await context.send(`gm`);
+    }
   },
 };
 
