@@ -22,7 +22,9 @@ const env: XmtpEnv = "production";
 
 async function main() {
   console.log(`Creating client on the '${env}' network...`);
-  const dbPath = `.data/xmtp/${signer.getAddress()}-${env}`;
+  const dbPath =
+    process.env.RAILWAY_VOLUME_MOUNT_PATH ??
+    `.data/xmtp/${signer.getAddress()}-${env}`;
 
   const client = await Client.create(signer, encryptionKey, { env, dbPath });
 
