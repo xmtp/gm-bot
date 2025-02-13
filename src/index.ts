@@ -18,7 +18,7 @@ if (!ENCRYPTION_KEY) {
 const signer = createSigner(WALLET_KEY as `0x${string}`);
 const encryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
 
-const env: XmtpEnv = "production";
+const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
 
 async function main() {
   console.log(`Creating client on the '${env}' network...`);
