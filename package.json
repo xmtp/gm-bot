@@ -8,8 +8,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@xmtp/content-type-text": "^2.0.0",
-    "@xmtp/node-sdk": "0.0.40",
+    "@xmtp/node-sdk": "0.0.42",
     "tsx": "^4.19.2",
     "uint8arrays": "^5.1.0",
     "viem": "^2.22.17"

@@ -1,4 +1,3 @@
-import { ContentTypeText } from "@xmtp/content-type-text";
 import dotenv from "dotenv";
 import { Client, type XmtpEnv } from "@xmtp/node-sdk";
 import { createSigner, getEncryptionKeyFromHex } from "./helper.js";
@@ -26,7 +25,11 @@ async function main() {
 
   const dbPath = `${volumePath}/${signer.getAddress()}-${env}`;
 
-  const client = await Client.create(signer, encryptionKey, { env, dbPath });
+  const client = await Client.create(signer, encryptionKey, {
+    env,
+    dbPath,
+    loggingLevel: "debug" as any,
+  });
 
   console.log("Syncing conversations...");
   await client.conversations.sync();
@@ -40,16 +43,10 @@ async function main() {
 
   for await (const message of await stream) {
     if (
-      !message ||
-      !message.contentType ||
-      !ContentTypeText.sameAs(message.contentType)
+      message?.senderInboxId.toLowerCase() ===
+        client.accountAddress.toLowerCase() ||
+      message?.contentType?.typeId !== "text"
     ) {
-      console.log("Invalid message, skipping", message);
-      continue;
-    }
-
-    // Ignore own messages
-    if (message.senderInboxId === client.inboxId) {
       continue;
     }
 
