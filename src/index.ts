@@ -44,7 +44,7 @@ async function main() {
   for await (const message of await stream) {
     if (
       message?.senderInboxId.toLowerCase() ===
-        client.accountAddress.toLowerCase() ||
+        client.inboxId.toLowerCase() ||
       message?.contentType?.typeId !== "text"
     ) {
       continue;
