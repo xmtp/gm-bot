@@ -1,11 +1,13 @@
 ## GM bot
 
+A simple XMTP agent that responds with `gm` to any message it receives
+
 > [!TIP]
 > This example is part of the [XMTP agent examples](https://github.com/ephemeraHQ/xmtp-agent-examples) collection.
 
-A simple XMTP agent that responds with `gm` to any message it receives
+## Web inbox
 
-> Try XMTP using [xmtp.chat](https://xmtp.chat) and sending a message to `gm.xmtp.eth`
+Try XMTP using [xmtp.chat](https://xmtp.chat) and sending a message to `gm.xmtp.eth`
 
 ![](/gm.png)
 
