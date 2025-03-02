@@ -28,7 +28,7 @@ async function main() {
   const client = await Client.create(signer, encryptionKey, {
     env,
     dbPath,
-    loggingLevel: "debug" as any,
+    loggingLevel: process.env.LOGGING_LEVEL as any,
   });
 
   console.log("Syncing conversations...");
