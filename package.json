@@ -15,10 +15,10 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
-    "typescript": "^5.4.5",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "typescript": "^5.4.5"
   },
   "engines": {
-    "node": "20.18.0"
+    "node": "20.15.0"
   }
 }

@@ -22,7 +22,19 @@ const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
 async function main() {
   console.log(`Creating client on the '${env}' network...`);
   let volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp";
-
+  if (process.env.RAILWAY_VOLUME_MOUNT_PATH) {
+    console.log(
+      `Using Railway volume path: ${process.env.RAILWAY_VOLUME_MOUNT_PATH}`
+    );
+    console.log(`Checking contents of volume directory...`);
+    const fs = await import("fs/promises");
+    try {
+      const files = await fs.readdir(volumePath);
+      console.log(`Contents of ${volumePath}:`, files);
+    } catch (error) {
+      console.error(`Error reading directory ${volumePath}:`, error);
+    }
+  }
   const dbPath = `${volumePath}/${signer.getAddress()}-${env}`;
 
   const client = await Client.create(signer, encryptionKey, {
