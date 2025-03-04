@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { Client, type XmtpEnv } from "@xmtp/node-sdk";
+import fs from "fs/promises";
 import { createSigner, getEncryptionKeyFromHex } from "./helper.js";
 
 dotenv.config();
@@ -22,12 +23,17 @@ const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
 async function main() {
   console.log(`Creating client on the '${env}' network...`);
   let volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp";
+  // Ensure the volume path directory exists
+  try {
+    await fs.mkdir(volumePath, { recursive: true });
+    console.log(`Ensured directory exists: ${volumePath}`);
+  } catch (error) {
+    console.error(`Error creating directory ${volumePath}:`, error);
+  }
   if (process.env.RAILWAY_VOLUME_MOUNT_PATH) {
     console.log(
       `Using Railway volume path: ${process.env.RAILWAY_VOLUME_MOUNT_PATH}`
     );
-    console.log(`Checking contents of volume directory...`);
-    const fs = await import("fs/promises");
     try {
       const files = await fs.readdir(volumePath);
       console.log(`Contents of ${volumePath}:`, files);
