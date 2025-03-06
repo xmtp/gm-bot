@@ -73,7 +73,7 @@ async function main() {
       }`
     );
 
-    const conversation = client.conversations.getConversationById(
+    const conversation = await client.conversations.getConversationById(
       message.conversationId
     );
 
