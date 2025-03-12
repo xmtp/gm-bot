@@ -41,7 +41,9 @@ async function main() {
       console.error(`Error reading directory ${volumePath}:`, error);
     }
   }
-  const dbPath = `${volumePath}/${signer.getAddress()}-${env}`;
+  const identifier = await signer.getIdentifier();
+  const address = identifier.identifier;
+  const dbPath = `${volumePath}/${address}-${env}`;
 
   const client = await Client.create(signer, encryptionKey, {
     env,
@@ -53,7 +55,7 @@ async function main() {
   await client.conversations.sync();
 
   console.log(
-    `Agent initialized on ${client.accountAddress}\nSend a message on http://xmtp.chat/dm/${client.accountAddress}?env=${env}`
+    `Agent initialized on ${address}\nSend a message on http://xmtp.chat/dm/${address}?env=${env}`
   );
 
   console.log("Waiting for messages...");

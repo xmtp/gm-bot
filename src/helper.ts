@@ -1,20 +1,27 @@
 import { getRandomValues } from "node:crypto";
-import type { Signer } from "@xmtp/node-sdk";
+import { IdentifierKind, type Identifier, type Signer } from "@xmtp/node-sdk";
+
 import { fromString, toString } from "uint8arrays";
 import { createWalletClient, http, toBytes } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { sepolia } from "viem/chains";
 
+export type SignMessage = (message: string) => Promise<Uint8Array> | Uint8Array;
+export type GetIdentifier = () => Promise<Identifier> | Identifier;
+export type GetChainId = () => bigint;
+export type GetBlockNumber = () => bigint;
+
 interface User {
-  key: string;
+  key: `0x${string}`;
   account: ReturnType<typeof privateKeyToAccount>;
   wallet: ReturnType<typeof createWalletClient>;
 }
 
-export const createUser = (key: string): User => {
-  const account = privateKeyToAccount(key as `0x${string}`);
+export const createUser = (key: `0x${string}`): User => {
+  const accountKey = key;
+  const account = privateKeyToAccount(accountKey);
   return {
-    key,
+    key: accountKey,
     account,
     wallet: createWalletClient({
       account,
@@ -24,11 +31,14 @@ export const createUser = (key: string): User => {
   };
 };
 
-export const createSigner = (key: string): Signer => {
+export const createSigner = (key: `0x${string}`): Signer => {
   const user = createUser(key);
   return {
-    walletType: "EOA",
-    getAddress: () => user.account.address,
+    type: "EOA",
+    getIdentifier: () => ({
+      identifierKind: IdentifierKind.Ethereum,
+      identifier: user.account.address.toLowerCase(),
+    }),
     signMessage: async (message: string) => {
       const signature = await user.wallet.signMessage({
         message,
