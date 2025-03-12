@@ -20,6 +20,6 @@ git clone https://github.com/xmtp/gm-bot.git
 cd gm-bot
 # install packages
 yarn
-# run the agents
+# run the agent
 yarn dev
 ```
