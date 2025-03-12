@@ -1,15 +1,10 @@
 import { getRandomValues } from "node:crypto";
-import { IdentifierKind, type Identifier, type Signer } from "@xmtp/node-sdk";
+import { IdentifierKind, type Signer } from "@xmtp/node-sdk";
 
 import { fromString, toString } from "uint8arrays";
 import { createWalletClient, http, toBytes } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { sepolia } from "viem/chains";
-
-export type SignMessage = (message: string) => Promise<Uint8Array> | Uint8Array;
-export type GetIdentifier = () => Promise<Identifier> | Identifier;
-export type GetChainId = () => bigint;
-export type GetBlockNumber = () => bigint;
 
 interface User {
   key: `0x${string}`;
