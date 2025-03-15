@@ -1,0 +1,60 @@
+name: Package Manager Compatibility Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-package-managers:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package-manager: [npm, yarn, bun]
+        node-version: [20]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: matrix.package-manager != 'bun'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup Bun
+        if: matrix.package-manager == 'bun'
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            ~/.bun/install/cache
+          key: ${{ runner.os }}-${{ matrix.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/bun.lockb') }}
+
+      - name: Install dependencies (npm)
+        if: matrix.package-manager == 'npm'
+        run: |
+          npm install
+          npm run build
+          npm start & sleep 5 && kill $!
+
+      - name: Install dependencies (yarn)
+        if: matrix.package-manager == 'yarn'
+        run: |
+          npm install -g yarn
+          yarn install
+          yarn build
+          yarn start & sleep 5 && kill $!
+
+      - name: Install dependencies (bun)
+        if: matrix.package-manager == 'bun'
+        run: |
+          bun install
+          bun run build
+          bun run start & sleep 5 && kill $!
