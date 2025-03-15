@@ -24,23 +24,8 @@ async function main() {
   console.log(`Creating client on the '${env}' network...`);
   let volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp";
   // Ensure the volume path directory exists
-  try {
-    await fs.mkdir(volumePath, { recursive: true });
-    console.log(`Ensured directory exists: ${volumePath}`);
-  } catch (error) {
-    console.error(`Error creating directory ${volumePath}:`, error);
-  }
-  if (process.env.RAILWAY_VOLUME_MOUNT_PATH) {
-    console.log(
-      `Using Railway volume path: ${process.env.RAILWAY_VOLUME_MOUNT_PATH}`
-    );
-    try {
-      const files = await fs.readdir(volumePath);
-      console.log(`Contents of ${volumePath}:`, files);
-    } catch (error) {
-      console.error(`Error reading directory ${volumePath}:`, error);
-    }
-  }
+  await fs.mkdir(volumePath, { recursive: true });
+
   const identifier = await signer.getIdentifier();
   const address = identifier.identifier;
   const dbPath = `${volumePath}/${address}-${env}`;
