@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Client, type XmtpEnv } from "@xmtp/node-sdk";
+import { Client, IdentifierKind, type XmtpEnv } from "@xmtp/node-sdk";
 import fs from "fs/promises";
 import { createSigner, getEncryptionKeyFromHex } from "./helper.js";
 
@@ -28,6 +28,15 @@ async function main() {
 
   const identifier = await signer.getIdentifier();
   const address = identifier.identifier;
+
+  const canMessage = await Client.canMessage([
+    {
+      identifier: address,
+      identifierKind: IdentifierKind.Ethereum,
+    },
+  ]);
+  console.log(canMessage);
+
   const dbPath = `${volumePath}/${address}-${env}`;
 
   const client = await Client.create(signer, encryptionKey, {
@@ -59,7 +68,6 @@ async function main() {
         message.senderInboxId
       }`
     );
-
     const conversation = await client.conversations.getConversationById(
       message.conversationId
     );
