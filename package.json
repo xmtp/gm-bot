@@ -8,17 +8,16 @@
     "dev": "tsx src/index.ts"
   },
   "dependencies": {
-    "@xmtp/node-sdk": "1.0.0",
+    "@xmtp/node-sdk": "1.0.5",
     "uint8arrays": "^5.1.0",
     "viem": "^2.22.17"
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
     "dotenv": "^16.4.5",
-    "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   },
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "pnpm@10.7.0",
   "engines": {
     "node": ">=20"
   }
