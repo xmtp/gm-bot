@@ -19,27 +19,7 @@ jobs:
       - run: corepack enable
       - run: yarn
       - run: yarn build
-      - name: Test dev script
-        run: |
-          # Run yarn dev in the background
-          yarn dev > dev_output.log 2>&1 &
-          PID=$!
-
-          # Give it 5 seconds to start up
-          sleep 5
-
-          # Kill the process
-          kill $PID || true
-
-          # Check if there are any errors in the output
-          if grep -q "Error:" dev_output.log; then
-            echo "Error detected in yarn dev output:"
-            cat dev_output.log
-            exit 1
-          else
-            echo "No errors detected in yarn dev output"
-            cat dev_output.log
-          fi
+      - run: yarn dev
 
   package:
     needs: [check]
