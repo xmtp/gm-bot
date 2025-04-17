@@ -11,6 +11,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
+        with:
           cache: "yarn"
         env:
           SKIP_YARN_COREPACK_CHECK: "1"
