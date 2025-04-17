@@ -11,11 +11,10 @@ interface User {
   wallet: ReturnType<typeof createWalletClient>;
 }
 
-export const createUser = (key: `0x${string}`): User => {
-  const accountKey = key;
-  const account = privateKeyToAccount(accountKey);
+export const createUser = (key: string): User => {
+  const account = privateKeyToAccount(key as `0x${string}`);
   return {
-    key: accountKey,
+    key: key as `0x${string}`,
     account,
     wallet: createWalletClient({
       account,
@@ -25,8 +24,9 @@ export const createUser = (key: `0x${string}`): User => {
   };
 };
 
-export const createSigner = (key: `0x${string}`): Signer => {
-  const user = createUser(key);
+export const createSigner = (key: string): Signer => {
+  const sanitizedKey = key.startsWith("0x") ? key : `0x${key}`;
+  const user = createUser(sanitizedKey);
   return {
     type: "EOA",
     getIdentifier: () => ({
@@ -43,23 +43,13 @@ export const createSigner = (key: `0x${string}`): Signer => {
   };
 };
 
-/**
- * Generate a random encryption key
- * @returns The encryption key
- */
+// Generate a random encryption key
 export const generateEncryptionKeyHex = () => {
-  /* Generate a random encryption key */
   const uint8Array = getRandomValues(new Uint8Array(32));
-  /* Convert the encryption key to a hex string */
   return toString(uint8Array, "hex");
 };
 
-/**
- * Get the encryption key from a hex string
- * @param hex - The hex string
- * @returns The encryption key
- */
+// Get encryption key from hex string
 export const getEncryptionKeyFromHex = (hex: string) => {
-  /* Convert the hex string to an encryption key */
   return fromString(hex, "hex");
 };
