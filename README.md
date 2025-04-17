@@ -66,6 +66,5 @@ You can configure the agent using these environment variables:
   `production`)
 - `WALLET_KEY`: The private key for the agent's wallet
 - `ENCRYPTION_KEY`: The encryption key for the agent's database
-- `LOGGING_LEVEL`: Optional logging level (e.g., `debug`)
 
 A `.env.example` file is provided as a template.

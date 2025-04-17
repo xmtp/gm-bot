@@ -196,7 +196,6 @@ async function main() {
   const client = await Client.create(signer, encryptionKey, {
     dbEncryptionKey,
     env,
-    loggingLevel: process.env.LOGGING_LEVEL as any,
   });
 
   console.log("Syncing conversations...");
@@ -317,10 +316,10 @@ const address = identifier.identifier;
 const dbPath = `${volumePath}/${address}-${env}`;
 
 // Then pass dbPath to the client options
-const client = await Client.create(signer, encryptionKey, {
+const client = await Client.create(signer, {
+  dbEncryptionKey,
   env,
   dbPath,
-  loggingLevel: process.env.LOGGING_LEVEL as any,
 });
 ```
 

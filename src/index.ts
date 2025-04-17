@@ -13,7 +13,7 @@ if (!ENCRYPTION_KEY) {
 }
 
 const signer = createSigner(WALLET_KEY as `0x${string}`);
-const encryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
+const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
 
 const env: XmtpEnv = (XMTP_ENV as XmtpEnv) || "dev";
 
@@ -23,8 +23,7 @@ async function main() {
   // Create XMTP client
   const client = await Client.create(signer, {
     env,
-    dbEncryptionKey: encryptionKey,
-    loggingLevel: process.env.LOGGING_LEVEL as any,
+    dbEncryptionKey,
   });
 
   console.log("Syncing conversations...");
