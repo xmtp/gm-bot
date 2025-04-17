@@ -56,6 +56,7 @@ Key points:
 - Use `"type": "module"` for ES modules support
 - Include `tsx` for TypeScript execution
 - Specify Node.js >= 20 requirement
+- Default to `yarn` as the package manager
 
 ### tsconfig.json
 
