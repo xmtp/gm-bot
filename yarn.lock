@@ -277,7 +277,7 @@
   resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.2.0-dev.d811cc6.tgz#fc26e1757d4a39410d6d0d12cdaa869cf3c73105"
   integrity sha512-bkB+vKa4T31ZvXK7dKHFFF4rujRFwgOx5OZFDaHpxKlgIZDjXuPrsvS1MrEdltkIuGamYdUBOo8gJDYSYD6Dlg==
 
-"@xmtp/node-sdk@2.0.2", "@xmtp/node-sdk@^2.0.2":
+"@xmtp/node-sdk@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-2.0.2.tgz#0a61724d27e0e1e2221a6b960dee8e534d2598d7"
   integrity sha512-BgoBYI5ZtDPlSABN1cupc7+eeu1TvtSQ+aADSHEpDNHb0geTVKIasd7+dHo70aOZ5qwBn1Umg2F19lbreh4wRQ==
