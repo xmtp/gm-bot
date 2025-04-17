@@ -12,7 +12,7 @@ if (!ENCRYPTION_KEY) {
   throw new Error("ENCRYPTION_KEY must be set");
 }
 
-const signer = createSigner(WALLET_KEY as `0x${string}`);
+const signer = createSigner(WALLET_KEY);
 const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
 
 const env: XmtpEnv = (XMTP_ENV as XmtpEnv) || "dev";
@@ -22,6 +22,10 @@ async function main() {
 
   try {
     // Create XMTP client
+    console.log("Creating client...");
+    console.log("signer", signer);
+    console.log("dbEncryptionKey", dbEncryptionKey);
+    console.log("env", env);
     const client = await Client.create(signer, {
       env,
       dbEncryptionKey,

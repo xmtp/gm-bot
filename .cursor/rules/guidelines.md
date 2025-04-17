@@ -180,7 +180,7 @@ if (!ENCRYPTION_KEY) {
   throw new Error("ENCRYPTION_KEY must be set");
 }
 
-const signer = createSigner(WALLET_KEY as `0x${string}`);
+const signer = createSigner(WALLET_KEY);
 const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
 
 const env: XmtpEnv = (XMTP_ENV as XmtpEnv) || "dev";
@@ -189,7 +189,7 @@ async function main() {
   console.log(`Creating client on the '${env}' network...`);
 
   // Create client without specifying dbPath
-  const client = await Client.create(signer, encryptionKey, {
+  const client = await Client.create(signer, {
     dbEncryptionKey,
     env,
   });

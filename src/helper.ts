@@ -1,5 +1,5 @@
 import { getRandomValues } from "node:crypto";
-import { type Signer, IdentifierKind } from "@xmtp/node-sdk";
+import { IdentifierKind, type Signer } from "@xmtp/node-sdk";
 import { fromString, toString } from "uint8arrays";
 import { createWalletClient, http, toBytes } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
@@ -43,13 +43,23 @@ export const createSigner = (key: string): Signer => {
   };
 };
 
-// Generate a random encryption key
+/**
+ * Generate a random encryption key
+ * @returns The encryption key
+ */
 export const generateEncryptionKeyHex = () => {
+  /* Generate a random encryption key */
   const uint8Array = getRandomValues(new Uint8Array(32));
+  /* Convert the encryption key to a hex string */
   return toString(uint8Array, "hex");
 };
 
-// Get encryption key from hex string
+/**
+ * Get the encryption key from a hex string
+ * @param hex - The hex string
+ * @returns The encryption key
+ */
 export const getEncryptionKeyFromHex = (hex: string) => {
+  /* Convert the hex string to an encryption key */
   return fromString(hex, "hex");
 };
