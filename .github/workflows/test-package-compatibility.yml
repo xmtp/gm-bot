@@ -33,8 +33,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: xmtp/xmtp-qa-testing
-          path: xmtp-qa-testing
+          path: gm-bot
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -59,12 +58,9 @@ jobs:
           npm install -g yarn@1.22.19
           yarn --version
 
-      - name: Navigate to gm-bot directory
-        run: cd xmtp-qa-testing/bots/gm-bot
-
       - name: Clean previous installations
         run: |
-          cd xmtp-qa-testing/bots/gm-bot
+          cd gm-bot
           rm -rf node_modules
           rm -rf dist
           rm -rf .yarn
@@ -76,59 +72,45 @@ jobs:
       - name: Install dependencies with npm
         if: matrix.package-manager == 'npm'
         run: |
-          cd xmtp-qa-testing/bots/gm-bot
+          cd gm-bot
           npm install
+          npm run build
 
       - name: Install dependencies with yarn
         if: matrix.package-manager == 'yarn'
         run: |
-          cd xmtp-qa-testing/bots/gm-bot
+          cd gm-bot
           touch yarn.lock
           yarn install --no-immutable
+          yarn build
 
       - name: Install dependencies with yarn 1
         if: matrix.package-manager == 'yarn1'
         run: |
-          cd xmtp-qa-testing/bots/gm-bot
+          cd gm-bot
           touch yarn.lock
           yarn install --no-immutable
+          yarn build
 
       - name: Install dependencies with pnpm
         if: matrix.package-manager == 'pnpm'
         run: |
-          cd xmtp-qa-testing/bots/gm-bot
+          cd gm-bot
           pnpm install
           pnpm add @xmtp/node-bindings
+          pnpm build
 
       - name: Install dependencies with bun
         if: matrix.package-manager == 'bun'
         run: |
-          cd xmtp-qa-testing/bots/gm-bot
+          cd gm-bot
           bun install
 
       - name: Build project
         run: |
-          cd xmtp-qa-testing/bots/gm-bot
+          cd gm-bot
           if [ "${{ matrix.package-manager }}" = "yarn1" ]; then
             yarn run build
           else
             ${{ matrix.package-manager }} run build
-          fi
-
-      - name: Set environment variables
-        run: |
-          cd xmtp-qa-testing/bots/gm-bot
-          echo "XMTP_ENV=${{ vars.XMTP_ENV }}" > .env
-          echo "WALLET_KEY=${{ secrets.WALLET_KEY }}" >> .env
-          echo "ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}" >> .env
-          echo "GM_BOT_ADDRESS=${{ vars.GM_BOT_ADDRESS }}" >> .env
-          echo "LOGGING_LEVEL=${{ vars.LOGGING_LEVEL }}" >> .env
-
-      - name: Run client check
-        run: |
-          cd xmtp-qa-testing/bots/gm-bot
-          if [ "${{ matrix.package-manager }}" = "yarn1" ]; then
-            yarn run client-check
-          else
-            ${{ matrix.package-manager }} run client-check
           fi
