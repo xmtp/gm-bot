@@ -19,7 +19,18 @@ jobs:
       - run: corepack enable
       - run: yarn
       - run: yarn build
-      - run: yarn dev
+
+      - name: Run agent
+        run: |
+          cd gm-bot
+          timeout 20s yarn dev | tee output.log
+          if grep -q "Waiting for messages..." output.log; then
+            echo "Success: Agent started successfully and is waiting for messages"
+            exit 0
+          else
+            echo "Error: Agent did not reach 'Waiting for messages...' state"
+            exit 1
+          fi
 
   package:
     needs: [check]
