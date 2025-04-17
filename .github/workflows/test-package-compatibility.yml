@@ -22,7 +22,6 @@ jobs:
 
       - name: Run agent
         run: |
-          cd gm-bot
           timeout 20s yarn dev | tee output.log
           if grep -q "Waiting for messages..." output.log; then
             echo "Success: Agent started successfully and is waiting for messages"
