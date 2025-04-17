@@ -1,14 +1,15 @@
 {
-  "name": "gm-bot",
+  "name": "multiply-agent",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "tsx src/index.ts",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx --watch src/index.ts",
+    "gen:keys": "tsx scripts/generateKeys.ts"
   },
   "dependencies": {
-    "@xmtp/node-sdk": "1.0.2",
+    "@xmtp/node-sdk": "^2.0.3",
     "uint8arrays": "^5.1.0",
     "viem": "^2.22.17"
   },

@@ -1,9 +1,7 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import { Client, type XmtpEnv } from "@xmtp/node-sdk";
 import fs from "fs/promises";
 import { createSigner, getEncryptionKeyFromHex } from "./helper.js";
-
-dotenv.config();
 
 const { WALLET_KEY, ENCRYPTION_KEY } = process.env;
 
@@ -16,7 +14,7 @@ if (!ENCRYPTION_KEY) {
 }
 
 const signer = createSigner(WALLET_KEY as `0x${string}`);
-const encryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
+const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
 
 const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
 
@@ -30,7 +28,8 @@ async function main() {
   const address = identifier.identifier;
   const dbPath = `${volumePath}/${address}-${env}`;
 
-  const client = await Client.create(signer, encryptionKey, {
+  const client = await Client.create(signer, {
+    dbEncryptionKey,
     env,
     dbPath,
     loggingLevel: process.env.LOGGING_LEVEL as any,

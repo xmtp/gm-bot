@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 # Standalone XMTP Agent Guidelines
 
 This guide provides instructions for creating a standalone XMTP agent.
