@@ -1,10 +1,6 @@
 name: Package Compatibility
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+on: [pull_request]
 
 jobs:
   package:
