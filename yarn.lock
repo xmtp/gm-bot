@@ -272,20 +272,20 @@
   dependencies:
     "@xmtp/content-type-primitives" "^2.0.2"
 
-"@xmtp/node-bindings@1.2.0-dev.c24af30":
-  version "1.2.0-dev.c24af30"
-  resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.2.0-dev.c24af30.tgz#cc89b36e7c1cff583ae7a4b4a4e004a45b7e2ef6"
-  integrity sha512-MJZFYfkhxwCJCNXfUn1XXYHjBT5sfEdd826shC1OIpyKO3C2/UugLUMPm9HmkLvg4sf0wM5onPsj5XB5fv8KXw==
+"@xmtp/node-bindings@1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.1.8.tgz#f0c513e09cf9c043895db48e135a2292df725adc"
+  integrity sha512-TU96Rh6SD69SJWe7RBKcg6ZtUKHtiOlLL9OSFry2EhMWqXcEMVZc+nnbHNwdaujLBERSjLi3Hk/sSdJhJ2RvVw==
 
-"@xmtp/node-sdk@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-2.0.3.tgz#98e5d2d87b943e80d130f48d53401330ec108d7f"
-  integrity sha512-sFXqih+vWQggBamWjGVF8wQ3vqCjO4DAIgbZ5YuvnwP8UDF7I4R3Ca6o23hdgxN6eojIliENntP9x0QXwexc2g==
+"@xmtp/node-sdk@2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-2.0.8.tgz#ae949bf5fdc31db6e26471ab181bf24db41d8114"
+  integrity sha512-UwI8fTNyKtPAt3iLNr908/vPMbxFx6LVPHJ2DjcIgL5cLPDW+y0NkM9yts88EQSccR1EzOpy52IKjkRHXMVdPQ==
   dependencies:
     "@xmtp/content-type-group-updated" "^2.0.2"
     "@xmtp/content-type-primitives" "^2.0.2"
     "@xmtp/content-type-text" "^2.0.2"
-    "@xmtp/node-bindings" "1.2.0-dev.c24af30"
+    "@xmtp/node-bindings" "1.1.8"
     "@xmtp/proto" "^3.78.0"
 
 "@xmtp/proto@^3.78.0":

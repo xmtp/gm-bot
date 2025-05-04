@@ -9,7 +9,7 @@
     "gen:keys": "tsx scripts/generateKeys.ts"
   },
   "dependencies": {
-    "@xmtp/node-sdk": "2.0.8-dev.7eef2ea",
+    "@xmtp/node-sdk": "2.0.8",
     "uint8arrays": "^5.1.0",
     "viem": "^2.22.17"
   },
