@@ -9,7 +9,7 @@ A simple XMTP agent that responds with `gm` to any message it receives
 
 Try XMTP using [xmtp.chat](https://xmtp.chat) and sending a message to `gm.xmtp.eth`
 
-![](./gm.png)
+![](./screenshot.png)
 
 ## Run the agent
 
