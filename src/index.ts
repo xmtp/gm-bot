@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { Client, type XmtpEnv } from "@xmtp/node-sdk";
-import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "./helper";
+import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "../helpers/client";
 
 const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
   "WALLET_KEY",
