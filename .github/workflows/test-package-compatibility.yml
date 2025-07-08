@@ -114,7 +114,26 @@ jobs:
           cd gm-bot
           bun install
 
-      - name: Build project
+      - name: Build project with npm
+        if: matrix.package-manager == 'npm'
         run: |
           cd gm-bot
-          ${{ matrix.package-manager }} run build
+          npm run build
+
+      - name: Build project with yarn
+        if: matrix.package-manager == 'yarn'
+        run: |
+          cd gm-bot
+          yarn build
+
+      - name: Build project with pnpm
+        if: matrix.package-manager == 'pnpm'
+        run: |
+          cd gm-bot
+          pnpm run build
+
+      - name: Build project with bun
+        if: matrix.package-manager == 'bun'
+        run: |
+          cd gm-bot
+          bun run build
