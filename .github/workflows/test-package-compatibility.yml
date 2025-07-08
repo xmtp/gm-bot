@@ -87,6 +87,22 @@ jobs:
           rm -f pnpm-lock.yaml
           rm -f bun.lockb
 
+      - name: Temporarily remove package manager enforcement for non-yarn
+        if: matrix.package-manager != 'yarn'
+        run: |
+          cd gm-bot
+          # Backup original files
+          cp package.json package.json.backup
+          cp .yarnrc.yml .yarnrc.yml.backup
+          # Remove packageManager field from package.json
+          node -e "
+            const pkg = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
+            delete pkg.packageManager;
+            require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+          # Rename .yarnrc.yml to disable yarn enforcement
+          mv .yarnrc.yml .yarnrc.yml.disabled
+
       - name: Install dependencies with npm
         if: matrix.package-manager == 'npm'
         run: |
