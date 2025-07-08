@@ -153,3 +153,11 @@ jobs:
         run: |
           cd gm-bot
           bun run build
+
+      - name: Restore original package manager configuration
+        if: matrix.package-manager != 'yarn'
+        run: |
+          cd gm-bot
+          # Restore original files
+          mv package.json.backup package.json
+          mv .yarnrc.yml.backup .yarnrc.yml
