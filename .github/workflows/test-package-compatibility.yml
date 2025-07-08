@@ -13,17 +13,13 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
+          node-version: 20
           cache: "yarn"
         env:
           SKIP_YARN_COREPACK_CHECK: "1"
       - run: corepack enable
-      - run: yarn
+      - run: yarn install
       - run: yarn build
-
-    
-      - name: Install dependencies
-        run: |
-          yarn install
 
       - name: Generate keys and set env
         run: |
@@ -47,7 +43,7 @@ jobs:
     strategy:
       matrix:
         node-version: [20, 21, 22, 23]
-        package-manager: [npm, yarn, yarn1, pnpm, bun]
+        package-manager: [npm, yarn, pnpm, bun]
       fail-fast: false
 
     steps:
@@ -61,6 +57,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Enable Corepack for Yarn
+        if: matrix.package-manager == 'yarn'
+        run: corepack enable
+
       - name: Install pnpm
         if: matrix.package-manager == 'pnpm'
         uses: pnpm/action-setup@v3
@@ -72,12 +72,6 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-
-      - name: Install Yarn 1
-        if: matrix.package-manager == 'yarn1'
-        run: |
-          npm install -g yarn@1.22.19
-          yarn --version
 
       - name: Clean previous installations
         run: |
@@ -100,15 +94,7 @@ jobs:
         if: matrix.package-manager == 'yarn'
         run: |
           cd gm-bot
-          touch yarn.lock
-          yarn install --no-immutable
-
-      - name: Install dependencies with yarn 1
-        if: matrix.package-manager == 'yarn1'
-        run: |
-          cd gm-bot
-          touch yarn.lock
-          yarn install --no-immutable
+          yarn install
 
       - name: Install dependencies with pnpm
         if: matrix.package-manager == 'pnpm'
@@ -126,8 +112,4 @@ jobs:
       - name: Build project
         run: |
           cd gm-bot
-          if [ "${{ matrix.package-manager }}" = "yarn1" ]; then
-            yarn run build
-          else
-            ${{ matrix.package-manager }} run build
-          fi
+          ${{ matrix.package-manager }} run build
