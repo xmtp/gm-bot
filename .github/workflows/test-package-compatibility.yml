@@ -23,7 +23,6 @@ jobs:
     
       - name: Install dependencies
         run: |
-          cd gm-bot
           yarn install
 
       - name: Generate keys and set env
