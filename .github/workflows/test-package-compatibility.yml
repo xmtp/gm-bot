@@ -80,7 +80,10 @@ jobs:
           rm -rf dist
           rm -rf .yarn
           rm -f package-lock.json
-          rm -f yarn.lock
+          # Only remove yarn.lock if not testing yarn
+          if [ "${{ matrix.package-manager }}" != "yarn" ]; then
+            rm -f yarn.lock
+          fi
           rm -f pnpm-lock.yaml
           rm -f bun.lockb
 
@@ -92,6 +95,8 @@ jobs:
 
       - name: Install dependencies with yarn
         if: matrix.package-manager == 'yarn'
+        env:
+          YARN_ENABLE_HARDENED_MODE: 0
         run: |
           cd gm-bot
           yarn install
