@@ -20,16 +20,16 @@ jobs:
       - run: yarn
       - run: yarn build
 
-      - name: Generate keys and set env
-        run: |
-          cd gm-bot
-          yarn gen:keys
-          echo "XMTP_ENV=dev" >> .env
-
+    
       - name: Install dependencies
         run: |
           cd gm-bot
           yarn install
+
+      - name: Generate keys and set env
+        run: |
+          yarn gen:keys
+          echo "XMTP_ENV=dev" >> .env
 
       - name: Run agent
         run: |
