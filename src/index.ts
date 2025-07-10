@@ -39,7 +39,17 @@ const onFail = () => {
   retry();
 };
 
-const onMessage = async (err: Error | null, message: DecodedMessage) => {
+const onMessage = async (err: Error | null, message?: DecodedMessage) => {
+  if (err) {
+    console.log("Error", err);
+    return;
+  }
+
+  if (!message) {
+    console.log("No message received");
+    return;
+  }
+
   if (
     message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
     message?.contentType?.typeId !== "text"
