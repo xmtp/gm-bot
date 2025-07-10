@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Client, type XmtpEnv } from "@xmtp/node-sdk";
+import { Client, DecodedMessage, type XmtpEnv } from "@xmtp/node-sdk";
 import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "../helpers/client";
 
 const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
@@ -39,7 +39,7 @@ const onFail = () => {
   retry();
 };
 
-const onMessage = async (message: any) => {
+const onMessage = async (err: Error | null, message: DecodedMessage) => {
   if (
     message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
     message?.contentType?.typeId !== "text"
