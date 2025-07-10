@@ -17,8 +17,9 @@ const MAX_RETRIES = 5;
 const RETRY_INTERVAL = 5000;
 
 let retries = MAX_RETRIES;
+let client: Client;
 
-const retry = (client: Client) => {
+const retry = () => {
   console.log(
     `Retrying in ${RETRY_INTERVAL / 1000}s, ${retries} retries left`,
   );
@@ -33,12 +34,12 @@ const retry = (client: Client) => {
   }
 };
 
-const onFail = (client: Client) => {
+const onFail = () => {
   console.log("Stream failed");
-  retry(client);
+  retry();
 };
 
-const onMessage = async (message: any, client: Client) => {
+const onMessage = async (message: any) => {
   if (
     message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
     message?.contentType?.typeId !== "text"
@@ -69,24 +70,50 @@ const handleStream = async (client: Client) => {
   console.log("Syncing conversations...");
   await client.conversations.sync();
 
-  console.log("Waiting for messages...");
-  
-  try {
-    const stream = client.conversations.streamAllMessages();
+  const stream = await client.conversations.streamAllMessages(
+    onMessage,
+    undefined,
+    undefined,
+    onFail,
+  );
 
-    for await (const message of await stream) {
-      await onMessage(message, client);
+  console.log("Waiting for messages...");
+
+  for await (const message of stream) {
+    if (
+      message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
+      message?.contentType?.typeId !== "text"
+    ) {
+      continue;
     }
-  } catch (error) {
-    console.log("Stream error:", error);
-    onFail(client);
+
+    console.log(
+      `Received message: ${message.content as string} by ${
+        message.senderInboxId
+      }`
+    );
+
+    const conversation = await client.conversations.getConversationById(
+      message.conversationId
+    );
+
+    if (!conversation) {
+      console.log("Unable to find conversation, skipping");
+      continue;
+    }
+
+    console.log(`Sending "gm" response...`);
+    await conversation.send("gm");
+
+    console.log("Waiting for messages...");
   }
+
 };
 
 async function main() {
   console.log(`Creating client on the '${env}' network...`);
   const signerIdentifier = (await signer.getIdentifier()).identifier;
-  const client = await Client.create(signer, {
+  client = await Client.create(signer, {
     dbEncryptionKey,
     env,
     dbPath: getDbPath(env + "-" + signerIdentifier),  
