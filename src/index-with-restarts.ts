@@ -103,7 +103,7 @@ const handleStream = async (client: Client) => {
     }
 
     console.log(`Sending "gm" response...`);
-    await conversation.send("gm");
+    await conversation.send("gm restart");
 
     console.log("Waiting for messages...");
   }
