@@ -73,7 +73,7 @@ const handleStream = async (client: Client) => {
   console.log("Syncing conversations...");
   await client.conversations.sync();
 
-  const stream = await client.conversations.streamAllMessages(
+  await client.conversations.streamAllMessages(
     onMessage,
     undefined,
     undefined,
