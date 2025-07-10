@@ -64,6 +64,9 @@ const onMessage = async (message: any) => {
 
   console.log(`Sending "gm" response...`);
   await conversation.send("gm");
+  
+  // Reset retry count on successful message processing
+  retries = MAX_RETRIES;
 };
 
 const handleStream = async (client: Client) => {
