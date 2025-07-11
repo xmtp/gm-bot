@@ -18,6 +18,7 @@ const RETRY_INTERVAL = 5000;
 
 let retries = MAX_RETRIES;
 let client: Client;
+let messageCount = 0;
 
 const retry = () => {
   console.log(
@@ -57,8 +58,9 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
+  messageCount++;
   console.log(
-    `Received message: ${message.content as string} by ${
+    `[${messageCount}] Received message: ${message.content as string} by ${
       message.senderInboxId
     }`
   );
