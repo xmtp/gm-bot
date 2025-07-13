@@ -19,7 +19,13 @@ const RETRY_INTERVAL = 5000;
 let retries = MAX_RETRIES;
 let client: Client;
 let messageCount = 0;
+let totalMessageCount = 0; // Track all messages received from stream
 let currentStream: any = null; // Store reference to current stream
+
+// Response time tracking
+let totalResponseTime = 0; // Total response time in milliseconds
+let totalSentTime = 0; // Total sent time in milliseconds
+let processedMessageCount = 0; // Count of messages we actually processed and replied to
 
 const retry = () => {
   console.log(
@@ -52,16 +58,22 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
+  totalMessageCount++;
+  console.log(`[Total: ${totalMessageCount}] Received raw message from ${message.senderInboxId}`);
+
   if (
     message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
     message?.contentType?.typeId !== "text"
   ) {
+    console.log(`[Total: ${totalMessageCount}] Filtered out message (self or non-text)`);
     return;
   }
 
   messageCount++;
+  const messageStartTime = Date.now(); // Record start time for response measurement
+  
   console.log(
-    `[${messageCount}] Received message: ${message.content as string} by ${
+    `[Processed: ${messageCount}/${totalMessageCount}] Processing message: ${message.content as string} by ${
       message.senderInboxId
     }`
   );
@@ -75,9 +87,28 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
-   conversation.send("gm").then(() => {
-    console.log("Replied to message: ", message.content as string);
-   }).catch(console.error);
+  const sendStartTime = Date.now(); // Record start time for send measurement
+  
+  conversation.send("gm").then(() => {
+    const sendEndTime = Date.now();
+    const messageEndTime = Date.now();
+    
+    const responseTime = messageEndTime - messageStartTime;
+    const sentTime = sendEndTime - sendStartTime;
+    
+    // Update totals
+    totalResponseTime += responseTime;
+    totalSentTime += sentTime;
+    processedMessageCount++;
+    
+    // Calculate averages
+    const avgResponseTime = totalResponseTime / processedMessageCount;
+    const avgSentTime = totalSentTime / processedMessageCount;
+    
+    console.log(`Replied to message: ${message.content as string}`);
+    console.log(`Response time: ${(responseTime / 1000).toFixed(3)}s, Sent time: ${(sentTime / 1000).toFixed(3)}s`);
+    console.log(`Avg response time: ${(avgResponseTime / 1000).toFixed(3)}s, Avg sent time: ${(avgSentTime / 1000).toFixed(3)}s`);
+  }).catch(console.error);
   
   // Reset retry count on successful message processing
   retries = MAX_RETRIES;
