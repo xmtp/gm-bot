@@ -823,6 +823,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gm-bot@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "gm-bot@workspace:."
+  dependencies:
+    "@types/node": "npm:^20.14.2"
+    "@xmtp/node-sdk": "npm:3.1.2"
+    dotenv: "npm:^16.4.5"
+    tsx: "npm:^4.19.3"
+    typescript: "npm:^5.7.3"
+    uint8arrays: "npm:^5.1.0"
+    viem: "npm:^2.22.17"
+  languageName: unknown
+  linkType: soft
+
 "graceful-fs@npm:^4.2.6":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
@@ -1073,20 +1087,6 @@ __metadata:
   checksum: 10c0/a2c6f17b04d6a9cd5d0cb7d07e32dc4f3be82804d44fc056357a98e449340a7ad37d0789da41186ccd8c953e0cf783be3b71f03a00b0a84788689f544ecade46
   languageName: node
   linkType: hard
-
-"multiply-agent@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "multiply-agent@workspace:."
-  dependencies:
-    "@types/node": "npm:^20.14.2"
-    "@xmtp/node-sdk": "npm:3.1.2"
-    dotenv: "npm:^16.4.5"
-    tsx: "npm:^4.19.3"
-    typescript: "npm:^5.7.3"
-    uint8arrays: "npm:^5.1.0"
-    viem: "npm:^2.22.17"
-  languageName: unknown
-  linkType: soft
 
 "negotiator@npm:^1.0.0":
   version: 1.0.0
