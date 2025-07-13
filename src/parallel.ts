@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { Client, DecodedMessage, type XmtpEnv } from "@xmtp/node-sdk";
 import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "../helpers/client";
-import PQueue from "p-queue";
+import PQueue from  "p-queue";
 
 const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
   "WALLET_KEY",
