@@ -75,11 +75,11 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
-  // conversation.send("gm").then(() => {
-  //   console.log("Replied to message: ", message.content as string);
-  // }).catch(console.error);
+  conversation.send("gm").then(() => {
+    console.log("Replied to message: ", message.content as string);
+  }).catch(console.error);
   
-  await conversation.send("gm-" + messageCount);
+//  await conversation.send("gm-" + messageCount);
   // Reset retry count on successful message processing
   retries = MAX_RETRIES;
 };
