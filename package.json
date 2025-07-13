@@ -4,15 +4,17 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsx   src/index.ts",
-    "dev:normal": "tsx  src/index-normal.ts",
-    "dev:queue": "tsx  src/index-queue.ts",
-    "dev:async": "tsx  src/index-async.ts",
+    "start": "tsx src/index.ts",
     "dev": "tsx --watch src/index.ts",
+    "start:async": "tsx src/index-async.ts",
+    "dev:async": "tsx --watch src/index-async.ts",
+    "start:parallel": "tsx src/index-parallel.ts",
+    "dev:parallel": "tsx --watch src/index-parallel.ts",
     "gen:keys": "tsx scripts/generateKeys.ts"
   },
   "dependencies": {
-    "@xmtp/node-sdk": "3.1.2",
+    "@xmtp/node-sdk": "^2.0.2",
+    "p-queue": "^8.0.0",
     "uint8arrays": "^5.1.0",
     "viem": "^2.22.17"
   },

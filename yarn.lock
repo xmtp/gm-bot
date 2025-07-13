@@ -425,22 +425,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xmtp/node-bindings@npm:1.2.8":
-  version: 1.2.8
-  resolution: "@xmtp/node-bindings@npm:1.2.8"
-  checksum: 10c0/af449d1be7f9b27d7bad421a9572e82ce996865385c9ef04865da68892ad380ac7bd605aea4a30436765c525246ab3286565479f2beceb4ccffffc4a451fba99
+"@xmtp/node-bindings@npm:1.2.2":
+  version: 1.2.2
+  resolution: "@xmtp/node-bindings@npm:1.2.2"
+  checksum: 10c0/a0e884d2303d6f2d6b937234c0982b8e64a871a6a6447c48178dbbfbec91222f1eff5d0327a90d4cf0c7b23717ab910f7967d723a1d012d1dea329aab2cf59e0
   languageName: node
   linkType: hard
 
-"@xmtp/node-sdk@npm:3.1.2":
-  version: 3.1.2
-  resolution: "@xmtp/node-sdk@npm:3.1.2"
+"@xmtp/node-sdk@npm:^2.0.2":
+  version: 2.2.1
+  resolution: "@xmtp/node-sdk@npm:2.2.1"
   dependencies:
     "@xmtp/content-type-group-updated": "npm:^2.0.2"
     "@xmtp/content-type-primitives": "npm:^2.0.2"
     "@xmtp/content-type-text": "npm:^2.0.2"
-    "@xmtp/node-bindings": "npm:1.2.8"
-  checksum: 10c0/a2861851db3eca4c2cbf7278efa34b28ebd67267e126358908ee51339ced1adb5e0bdf16cfb1662ec94f3ea612fd4329369e4abff90f106b34aa94b58166ab43
+    "@xmtp/node-bindings": "npm:1.2.2"
+  checksum: 10c0/2536c0aab0960d66badce11acf58fc719ba524a975f40bff2fab8a4d6305c9a8b88a2fd71c37a03f566264be02502407a9bce22183da4822d4bcc6c620c0b536
   languageName: node
   linkType: hard
 
@@ -734,7 +734,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:5.0.1":
+"eventemitter3@npm:5.0.1, eventemitter3@npm:^5.0.1":
   version: 5.0.1
   resolution: "eventemitter3@npm:5.0.1"
   checksum: 10c0/4ba5c00c506e6c786b4d6262cfbce90ddc14c10d4667e5c83ae993c9de88aa856033994dd2b35b83e8dc1170e224e66a319fa80adc4c32adcd2379bbc75da814
@@ -828,8 +828,9 @@ __metadata:
   resolution: "gm-bot@workspace:."
   dependencies:
     "@types/node": "npm:^20.14.2"
-    "@xmtp/node-sdk": "npm:3.1.2"
+    "@xmtp/node-sdk": "npm:^2.0.2"
     dotenv: "npm:^16.4.5"
+    p-queue: "npm:^8.0.0"
     tsx: "npm:^4.19.3"
     typescript: "npm:^5.7.3"
     uint8arrays: "npm:^5.1.0"
@@ -1150,6 +1151,23 @@ __metadata:
   version: 7.0.3
   resolution: "p-map@npm:7.0.3"
   checksum: 10c0/46091610da2b38ce47bcd1d8b4835a6fa4e832848a6682cf1652bc93915770f4617afc844c10a77d1b3e56d2472bb2d5622353fa3ead01a7f42b04fc8e744a5c
+  languageName: node
+  linkType: hard
+
+"p-queue@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "p-queue@npm:8.1.0"
+  dependencies:
+    eventemitter3: "npm:^5.0.1"
+    p-timeout: "npm:^6.1.2"
+  checksum: 10c0/6bdea170840546769c29682fed212745c951933476761ed3a981967fab624c7c0120dff79bd99a1ac8b650b420719a245813e944af4b8ee77d4dd78adbf5fe75
+  languageName: node
+  linkType: hard
+
+"p-timeout@npm:^6.1.2":
+  version: 6.1.4
+  resolution: "p-timeout@npm:6.1.4"
+  checksum: 10c0/019edad1c649ab07552aa456e40ce7575c4b8ae863191477f02ac8d283ac8c66cedef0ca93422735130477a051dfe952ba717641673fd3599befdd13f63bcc33
   languageName: node
   linkType: hard
 
