@@ -11,7 +11,6 @@ if (major < 20) {
   process.exit(1);
 }
 
-console.log("Generating keys for multiply-agent...");
 
 const walletKey = generatePrivateKey();
 const account = privateKeyToAccount(walletKey);
@@ -37,7 +36,7 @@ try {
 // Check if XMTP_ENV is already set
 const xmtpEnvExists = existingEnv.includes("XMTP_ENV=");
 
-const envContent = `# XMTP keys for multiply-agent
+const envContent = `# XMTP keys
 WALLET_KEY=${walletKey}
 ENCRYPTION_KEY=${encryptionKeyHex}
 ${!xmtpEnvExists ? "XMTP_ENV=dev\n" : ""}# public key is ${publicKey}
