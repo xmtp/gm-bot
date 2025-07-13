@@ -19,6 +19,7 @@ const RETRY_INTERVAL = 5000;
 let retries = MAX_RETRIES;
 let client: Client;
 let messageCount = 0;
+let currentStream: any = null; // Store reference to current stream
 
 const retry = () => {
   console.log(
@@ -74,18 +75,30 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
-  console.log(`Sending "gm" response...`);
-  await conversation.send("gm");
+  conversation.send("gm").then(() => {
+    console.log("Replied to message: ", message.content as string);
+  }).catch(console.error);
   
   // Reset retry count on successful message processing
   retries = MAX_RETRIES;
 };
 
 const handleStream = async (client: Client) => {
+  // Clean up existing stream if it exists
+  if (currentStream) {
+    console.log("Cleaning up existing stream");
+    try {
+      await currentStream.return();
+    } catch (e) {
+      console.log("Error cleaning up stream:", e);
+    }
+    currentStream = null;
+  }
+
   console.log("Syncing conversations...");
   await client.conversations.sync();
 
-  await client.conversations.streamAllMessages(
+  currentStream = await client.conversations.streamAllMessages(
     onMessage,
     undefined,
     undefined,
@@ -93,8 +106,6 @@ const handleStream = async (client: Client) => {
   );
 
   console.log("Waiting for messages...");
-
-
 };
 
 async function main() {
