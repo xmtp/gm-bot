@@ -11,7 +11,7 @@ if (major < 20) {
   process.exit(1);
 }
 
-console.log("Generating keys for multiply-agent...");
+console.log("Generating keys for gm-bot...");
 
 const walletKey = generatePrivateKey();
 const account = privateKeyToAccount(walletKey);
