@@ -4,7 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsx  --watch  src/index.ts",
+    "start": "tsx   src/index.ts",
+    "dev:normal": "tsx  src/index-normal.ts",
+    "dev:queue": "tsx  src/index-queue.ts",
+    "dev:async": "tsx  src/index-async.ts",
     "dev": "tsx --watch src/index.ts",
     "gen:keys": "tsx scripts/generateKeys.ts"
   },
