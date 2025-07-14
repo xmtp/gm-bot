@@ -1,12 +1,15 @@
 import "dotenv/config";
 import { Client, DecodedMessage, type XmtpEnv } from "@xmtp/node-sdk";
-import { createSigner, getEncryptionKeyFromHex, getDbPath } from "../helpers/client.js";
+import { createSigner, getEncryptionKeyFromHex } from "../helpers/client.js";
 
 let client: Client | null = null;
+let currentWorkerId: number | null = null;
 
 interface MessageTask {
   message: DecodedMessage;
   clientInboxId: string;
+  workerId: number;
+  sharedDbPath: string; // Add shared database path
   env: {
     WALLET_KEY: string;
     ENCRYPTION_KEY: string;
@@ -14,8 +17,9 @@ interface MessageTask {
   };
 }
 
-async function initializeClient(env: MessageTask['env']) {
-  if (client) return client;
+async function initializeClient(env: MessageTask['env'], workerId: number, sharedDbPath: string) {
+  // If we already have a client for this worker, reuse it
+  if (client && currentWorkerId === workerId) return client;
   
   const signer = createSigner(env.WALLET_KEY as `0x${string}`);
   const dbEncryptionKey = getEncryptionKeyFromHex(env.ENCRYPTION_KEY);
@@ -23,21 +27,23 @@ async function initializeClient(env: MessageTask['env']) {
   
   const signerIdentifier = (await signer.getIdentifier()).identifier;
   
+  // Use the shared database path instead of creating unique worker paths
   client = await Client.create(signer, {
     dbEncryptionKey,
     env: xmtpEnv,
-    dbPath: getDbPath(xmtpEnv + "-" + signerIdentifier),
+    dbPath: sharedDbPath,
     loggingLevel: process.env.LOGGING_LEVEL as any,
   });
   
-  console.log(`Worker: Client initialized for ${signerIdentifier}`);
+  currentWorkerId = workerId;
+  console.log(`Worker ${workerId}: Client initialized for ${signerIdentifier} with shared db: ${sharedDbPath}`);
   return client;
 }
 
 // This is the main function that Piscina will call
-export default async function processMessage({ message, clientInboxId, env }: MessageTask) {
+export default async function processMessage({ message, clientInboxId, workerId, sharedDbPath, env }: MessageTask) {
   try {
-    const workerClient = await initializeClient(env);
+    const workerClient = await initializeClient(env, workerId, sharedDbPath);
 
     // Skip messages from self or non-text messages  
     if (
@@ -47,9 +53,9 @@ export default async function processMessage({ message, clientInboxId, env }: Me
       return { success: true, skipped: true, messageId: message.id };
     }
 
-    console.log(`Worker: Processing message: ${message.content as string} by ${message.senderInboxId}`);
+    console.log(`Worker ${workerId}: Processing message: ${message.content as string} by ${message.senderInboxId}`);
 
-    // Sync conversations to ensure we have the latest data
+    // Worker handles ALL XMTP operations - sync conversations to ensure we have the latest data
     await workerClient.conversations.sync();
     
     const conversation = await workerClient.conversations.getConversationById(
@@ -57,20 +63,22 @@ export default async function processMessage({ message, clientInboxId, env }: Me
     );
 
     if (!conversation) {
-      console.log("Worker: Unable to find conversation, skipping");
+      console.log(`Worker ${workerId}: Unable to find conversation, skipping`);
       return { success: false, error: 'Conversation not found', messageId: message.id };
     }
 
+    // Worker handles sending the reply
     await conversation.send("gm: " + message.content);
-    console.log(`Worker: Replied to message: ${message.content as string}`);
+    console.log(`Worker ${workerId}: Replied to message: ${message.content as string}`);
     
-    return { success: true, messageId: message.id };
+    return { success: true, messageId: message.id, workerId };
   } catch (error) {
-    console.error('Worker: Error processing message:', error);
+    console.error(`Worker ${workerId}: Error processing message:`, error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error',
-      messageId: message.id 
+      messageId: message.id,
+      workerId 
     };
   }
 } 

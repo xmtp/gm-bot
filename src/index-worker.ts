@@ -1,13 +1,8 @@
 import "dotenv/config";
 import { Client, DecodedMessage, type XmtpEnv } from "@xmtp/node-sdk";
-import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "../helpers/client.js";
+import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment } from "../helpers/client.js";
 import Piscina from "piscina";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-
-// ES module equivalent of __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { resolve } from "path";
 
 const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
   "WALLET_KEY",
@@ -26,17 +21,15 @@ let client: Client;
 let messageCount = 0;
 let currentStream: any = null;
 
-// Initialize Piscina worker pool
+// Ultra-light worker pool
 const pool = new Piscina({
   filename: resolve(process.cwd(), 'dist/src/messageWorker.js'),
-  maxThreads: 4, // Adjust based on your needs
+  maxThreads: 4,
   minThreads: 1,
 });
 
 const retry = () => {
-  console.log(
-    `Retrying in ${RETRY_INTERVAL / 1000}s, ${retries} retries left`,
-  );
+  console.log(`Retrying in ${RETRY_INTERVAL / 1000}s, ${retries} retries left`);
   if (retries > 0) {
     retries--;
     setTimeout(() => {
@@ -60,42 +53,34 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
   }
 
   if (!message) {
-    console.log("No message received");
     return;
   }
 
   messageCount++;
-  console.log(`[Total: ${messageCount}] Received message from ${message.senderInboxId}`);
+  console.log(`[${messageCount}] Message from ${message.senderInboxId}`);
 
-  // Delegate message processing to worker pool (non-blocking!)
+  // Get the shared database path to pass to workers
+  const signerIdentifier = (await signer.getIdentifier()).identifier;
+  const sharedDbPath = getDbPath(env + "-shared-" + signerIdentifier);
+
+  // ULTRA-LIGHT: Fire-and-forget - zero waiting, zero logging, zero error handling
   pool.run({
     message,
     clientInboxId: client.inboxId,
+    workerId: Math.floor(Math.random() * 1000),
+    sharedDbPath, // Pass the shared database path
     env: {
       WALLET_KEY,
       ENCRYPTION_KEY,
       XMTP_ENV: env,
     }
-  }).then((result) => {
-    if (result.success) {
-      if (!result.skipped) {
-        console.log(`[Processed: ${messageCount}] Successfully processed message ${result.messageId}`);
-      }
-    } else {
-      console.log(`[Error: ${messageCount}] Failed to process message: ${result.error}`);
-    }
-  }).catch((error) => {
-    console.error('Worker pool error:', error);
-  });
+  }).catch(() => {}); // Silent catch - main thread doesn't care about worker results
 
-  // Reset retry count on successful message reception
   retries = MAX_RETRIES;
 };
 
 const handleStream = async (client: Client) => {
-  // Clean up existing stream if it exists
   if (currentStream) {
-    console.log("Cleaning up existing stream");
     try {
       await currentStream.return();
     } catch (e) {
@@ -118,22 +103,27 @@ const handleStream = async (client: Client) => {
 };
 
 async function main() {
-  console.log(`Creating client on the '${env}' network...`);
+  console.log(`Creating ultra-light client on '${env}' network...`);
   const signerIdentifier = (await signer.getIdentifier()).identifier;
+  
+  // Shared database path for all threads
+  const sharedDbPath = getDbPath(env + "-shared-" + signerIdentifier);
+  
+  // Main thread client - ONLY for streaming (absolute minimum)
   client = await Client.create(signer, {
     dbEncryptionKey,
     env,
-    dbPath: getDbPath(env + "-" + signerIdentifier),  
+    dbPath: sharedDbPath,  
     loggingLevel: process.env.LOGGING_LEVEL as any,
   });
-  logAgentDetails(client);
-
+  
+  console.log(`Ultra-light main thread ready for ${signerIdentifier}`);
   await handleStream(client);
 }
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
-  console.log('Shutting down gracefully...');
+  console.log('Shutting down...');
   await pool.destroy();
   process.exit(0);
 });

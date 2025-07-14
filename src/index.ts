@@ -1,13 +1,6 @@
 import "dotenv/config";
 import { Client, DecodedMessage, type XmtpEnv } from "@xmtp/node-sdk";
-import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "../helpers/client.js";
-import Piscina from "piscina";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-
-// ES module equivalent of __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "../helpers/client";
 
 const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
   "WALLET_KEY",
@@ -16,22 +9,17 @@ const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
 
 const signer = createSigner(WALLET_KEY as `0x${string}`);
 const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
+
 const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
 
 const MAX_RETRIES = 5;
+// wait 5 seconds before each retry
 const RETRY_INTERVAL = 5000;
 
 let retries = MAX_RETRIES;
 let client: Client;
 let messageCount = 0;
 let currentStream: any = null;
-
-// Initialize Piscina worker pool
-const pool = new Piscina({
-  filename: resolve(process.cwd(), 'dist/src/messageWorker.js'),
-  maxThreads: 4, // Adjust based on your needs
-  minThreads: 1,
-});
 
 const retry = () => {
   console.log(
@@ -65,30 +53,37 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
   }
 
   messageCount++;
-  console.log(`[Total: ${messageCount}] Received message from ${message.senderInboxId}`);
+  console.log(`[Total: ${messageCount}] Received raw message from ${message.senderInboxId}`);
 
-  // Delegate message processing to worker pool (non-blocking!)
-  pool.run({
-    message,
-    clientInboxId: client.inboxId,
-    env: {
-      WALLET_KEY,
-      ENCRYPTION_KEY,
-      XMTP_ENV: env,
-    }
-  }).then((result) => {
-    if (result.success) {
-      if (!result.skipped) {
-        console.log(`[Processed: ${messageCount}] Successfully processed message ${result.messageId}`);
-      }
-    } else {
-      console.log(`[Error: ${messageCount}] Failed to process message: ${result.error}`);
-    }
-  }).catch((error) => {
-    console.error('Worker pool error:', error);
-  });
+  if (
+    message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
+    message?.contentType?.typeId !== "text"
+  ) {
+    return;
+  }
 
-  // Reset retry count on successful message reception
+  messageCount++;
+  
+  console.log(
+    `[Processed: ${messageCount}/${messageCount}] Processing message: ${message.content as string} by ${
+      message.senderInboxId
+    }`
+  );
+
+  const conversation = await client.conversations.getConversationById(
+    message.conversationId
+  );
+
+  if (!conversation) {
+    console.log("Unable to find conversation, skipping");
+    return;
+  }
+
+  conversation.send("gm: "+message.content).then(() => {
+    console.log(`Replied to message: ${message.content as string}`);
+ }).catch(console.error);
+  
+  // Reset retry count on successful message processing
   retries = MAX_RETRIES;
 };
 
@@ -130,12 +125,5 @@ async function main() {
 
   await handleStream(client);
 }
-
-// Graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down gracefully...');
-  await pool.destroy();
-  process.exit(0);
-});
 
 main().catch(console.error);
