@@ -23,7 +23,7 @@ function parseArgs(): Config {
   const config: Config = {
     userCount: 5,
     botAddress: "",
-    timeout: 60 * 1000, // 60 seconds
+    timeout: 30 * 1000, // 60 seconds
     env: XMTP_ENV,
   };
 
@@ -185,7 +185,38 @@ async function runStressTest(config: Config): Promise<void> {
       );
     }
   } catch (error) {
-    console.log(`❌ Test timed out - shutting down`);
+    console.log(`❌ Test timed out - gathering partial results...`);
+    
+    // Collect partial results from completed workers
+    const partialResults = await Promise.allSettled(promises);
+    const completed = partialResults
+      .filter((result): result is PromiseFulfilledResult<{success: boolean; newDmTime: number; sendTime: number; responseTime: number}> => 
+        result.status === 'fulfilled')
+      .map(result => result.value);
+    
+    const successful = completed.filter((r) => r.success);
+    const completedCount = completed.length;
+    const timedOutCount = config.userCount - completedCount;
+
+    console.log(
+      `📊 Partial Results: ${successful.length}/${completedCount} successful workers (${completedCount}/${config.userCount} completed, ${timedOutCount} timed out)`,
+    );
+
+    if (successful.length > 0) {
+      const avgNewDm =
+        successful.reduce((sum, r) => sum + r.newDmTime, 0) / successful.length;
+      const avgSend =
+        successful.reduce((sum, r) => sum + r.sendTime, 0) / successful.length;
+      const avgResponse =
+        successful.reduce((sum, r) => sum + r.responseTime, 0) /
+        successful.length;
+
+      console.log(
+        `📈 Averages (from ${successful.length} successful): NewDM=${Math.round(avgNewDm)}ms, Send=${Math.round(avgSend)}ms, Response=${Math.round(avgResponse)}ms`,
+      );
+    } else {
+      console.log(`📈 No successful completions to calculate averages`);
+    }
   }
   
   process.exit(0);
