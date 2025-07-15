@@ -41,7 +41,7 @@ export default async function processMessage({ message, clientInboxId, workerId,
     await workerClient.conversations.sync();
     const conversation = await workerClient.conversations.getConversationById(message.conversationId);
 
-    if (conversation) conversation.send("gm: " + message.content);
+    if (conversation) await conversation.send("gm: " + message.content);
   } catch (error) {
     console.error(`Worker ${workerId}: Error processing message:`, error);
   }
