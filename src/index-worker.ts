@@ -18,10 +18,16 @@ let client: Client;
 let messageCount = 0;
 let currentStream: any = null;
 
-// Ultra-light worker pool
-const pool = new Piscina({
+// Ultra-light worker pools
+const messagePool = new Piscina({
   filename: resolve(process.cwd(), 'dist/src/messageWorker.js'),
   maxThreads: 4,
+  minThreads: 1,
+});
+
+const sendPool = new Piscina({
+  filename: resolve(process.cwd(), 'dist/src/sendWorker.js'),
+  maxThreads: 2,
   minThreads: 1,
 });
 
@@ -43,8 +49,8 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
   const signerIdentifier = (await signer.getIdentifier()).identifier;
   const sharedDbPath = getDbPath(env + "-shared-" + signerIdentifier);
 
-  // ULTRA-LIGHT: Fire-and-forget - zero waiting, zero logging, zero error handling
-  pool.run({
+  // Process message in worker thread
+  const processResult = await messagePool.run({
     message,
     clientInboxId: client.inboxId,
     workerId: Math.floor(Math.random() * 1000),
@@ -54,7 +60,22 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
       ENCRYPTION_KEY,
       XMTP_ENV: env,
     }
-  }).catch(() => {}); // Silent catch - main thread doesn't care about worker results
+  }).catch(() => null);
+
+  // If message processing returned a send task, handle it in send worker
+  if (processResult && processResult.shouldSend) {
+    sendPool.run({
+      conversationId: processResult.conversationId,
+      message: processResult.message,
+      workerId: Math.floor(Math.random() * 1000),
+      sharedDbPath,
+      env: {
+        WALLET_KEY,
+        ENCRYPTION_KEY,
+        XMTP_ENV: env,
+      }
+    }).catch(() => {}); // Silent catch - fire and forget
+  }
 };
 
 

@@ -36,13 +36,23 @@ export default async function processMessage({ message, clientInboxId, workerId,
   try {
     const workerClient = await initializeClient(env, sharedDbPath);
 
-    if (message?.senderInboxId.toLowerCase() === clientInboxId.toLowerCase()) return;
+    if (message?.senderInboxId.toLowerCase() === clientInboxId.toLowerCase()) return null;
 
     await workerClient.conversations.sync();
-    // const conversation = await workerClient.conversations.getConversationById(message.conversationId);
+    const conversation = await workerClient.conversations.getConversationById(message.conversationId);
 
-    // if (conversation) await conversation.send("gm: " + message.content);
+    if (conversation) {
+      // Return send task data for main thread to handle
+      return {
+        shouldSend: true,
+        conversationId: message.conversationId,
+        message: "gm: " + message.content
+      };
+    }
+    
+    return null;
   } catch (error) {
     console.error(`Worker ${workerId}: Error processing message:`, error);
+    return null;
   }
 } 
