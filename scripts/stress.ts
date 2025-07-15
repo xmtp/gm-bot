@@ -9,7 +9,7 @@ const { ENCRYPTION_KEY,LOGGING_LEVEL,XMTP_ENV } = validateEnvironment([
     "XMTP_ENV"
 ]);
 
-// yarn stress --address 0xC920326d59195681b48384672069B356360ADAb8 --users 5
+// yarn stress --address 0x362d666308d90e049404d361b29c41bda42dd38b --users 5
 
 interface Config {
   userCount: number;

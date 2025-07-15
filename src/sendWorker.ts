@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Client, type XmtpEnv } from "@xmtp/node-sdk";
+import { Client, type XmtpEnv, IdentifierKind, type Identifier } from "@xmtp/node-sdk";
 import { createSigner, getEncryptionKeyFromHex } from "../helpers/client.js";
 
 let client: Client | null = null;
@@ -22,7 +22,10 @@ async function initializeClient(env: SendTask['env'], sharedDbPath: string) {
   const signer = createSigner(env.WALLET_KEY as `0x${string}`);
   const dbEncryptionKey = getEncryptionKeyFromHex(env.ENCRYPTION_KEY);
   
-  client = await Client.create(signer, {
+  // Get the wallet address from the signer
+  const identifier = await signer.getIdentifier();
+  
+  client = await Client.build(identifier, {
     dbEncryptionKey,
     env: env.XMTP_ENV as XmtpEnv,
     dbPath: sharedDbPath,
@@ -34,17 +37,13 @@ async function initializeClient(env: SendTask['env'], sharedDbPath: string) {
 
 export default async function sendMessage({ conversationId, message, workerId, sharedDbPath, env }: SendTask) {
   try {
-    const sendClient = await initializeClient(env, sharedDbPath);
     
-    await sendClient.conversations.sync();
+    const sendClient = await initializeClient(env, sharedDbPath);
     const conversation = await sendClient.conversations.getConversationById(conversationId);
     
-    if (conversation) {
+    if (conversation) 
       await conversation.send(message);
-      console.log(`Send Worker ${workerId}: Message sent successfully`);
-    } else {
-      console.log(`Send Worker ${workerId}: Conversation not found`);
-    }
+    
   } catch (error) {
     console.error(`Send Worker ${workerId}: Error sending message:`, error);
   }
