@@ -37,14 +37,18 @@ async function initializeClient(env: SendTask['env']) {
 
 export default async function sendMessage({ message, conversationId, workerId, env }: SendTask) {
   try {
+    console.log(`🔄 Worker ${workerId}: Starting message processing...`);
     const sendClient = await initializeClient(env);
+    console.log(conversationId)
+    await sendClient.conversations.sync()
     const conversation = await sendClient.conversations.getConversationById(conversationId);
     
-    if (conversation)  conversation.send(message).then(() => {
-      console.log(`Worker ${workerId}: Sent response to conversation ${conversationId}`);
-    }).catch((error) => {
-      console.error(`Worker ${workerId}: Error sending message:`, error);
-    });
+    if (conversation) {
+      await conversation.send(message);
+      console.log(`✅ Worker ${workerId}: Sent response to conversation ${conversationId}`);
+    } else {
+      console.log(`❌ Worker ${workerId}: Conversation not found ${conversationId}`);
+    }
    
     
   } catch (error) {

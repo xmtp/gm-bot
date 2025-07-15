@@ -23,7 +23,7 @@ function parseArgs(): Config {
   const config: Config = {
     userCount: 5,
     botAddress: "",
-    timeout: 30 * 1000, // 60 seconds
+    timeout: 120 * 1000, // 120 seconds - increased for XMTP operations
     env: XMTP_ENV,
   };
 
@@ -67,7 +67,7 @@ async function runStressTest(config: Config): Promise<void> {
     const client = await Client.create(signer, { 
       env: config.env as XmtpEnv,
       loggingLevel: LOGGING_LEVEL as LogLevel,
-      dbPath: getDbPath(`${config.env}-worker-${i}-${signerIdentifier}`),
+      dbPath: getDbPath(`stress-${config.env}-worker-${i}-${signerIdentifier}`),
       dbEncryptionKey
     });
     

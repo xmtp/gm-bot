@@ -17,8 +17,8 @@ let messageCount = 0;
 
 const sendPool = new Piscina({
   filename: resolve(process.cwd(), 'dist/src/worker.js'),
-  maxThreads: 2,
-  minThreads: 1,
+  maxThreads: 4,
+  minThreads: 2,
 });
 
 
@@ -47,16 +47,20 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
   }
 
 
+  const workerId = Math.floor(Math.random() * 1000); // Generate unique worker ID
+  console.log(`📨 Processing message from ${message.senderInboxId} with worker ${workerId}`);
+  
   sendPool.run({
     conversationId: message.conversationId,
-    message: message.content as string,
+    message: `GM! Thanks for your message: "${message.content as string}"`,
+    workerId,
     env: {
       WALLET_KEY,
       ENCRYPTION_KEY,
       XMTP_ENV
     } 
   }).catch((error) => {
-    console.error("Worker error:", error);
+    console.error(`Worker ${workerId} error:`, error);
   });
 };
 
