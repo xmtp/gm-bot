@@ -57,27 +57,7 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
   }).catch(() => {}); // Silent catch - main thread doesn't care about worker results
 };
 
-const handleStream = async (client: Client) => {
-  if (currentStream) {
-    try {
-      await currentStream.return();
-    } catch (e) {
-      console.log("Error cleaning up stream:", e);
-    }
-    currentStream = null;
-  }
 
-  console.log("Syncing conversations...");
-  await client.conversations.sync();
-
-  currentStream = await client.conversations.streamAllMessages(
-    onMessage,
-    undefined,
-    undefined,
-  );
-
-  console.log("Waiting for messages...");
-};
 
 async function main() {
   console.log(`Creating ultra-light client on '${env}' network...`);
@@ -95,14 +75,19 @@ async function main() {
   });
   
   console.log(`Ultra-light main thread ready for ${signerIdentifier}`);
-  await handleStream(client);
+
+
+  console.log("Syncing conversations...");
+  await client.conversations.sync();
+
+  currentStream = await client.conversations.streamAllMessages(
+    onMessage,
+    undefined,
+    undefined,
+  );
+
+  console.log("Waiting for messages...");
 }
 
-// Graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down...');
-  await pool.destroy();
-  process.exit(0);
-});
 
 main().catch(console.error);
