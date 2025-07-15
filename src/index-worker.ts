@@ -12,7 +12,6 @@ const { WALLET_KEY, ENCRYPTION_KEY,XMTP_ENV } = validateEnvironment([
 
 
 let client: Client;
-let messageCount = 0;
 
 
 const sendPool = new Piscina({
@@ -32,14 +31,15 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
-  // More robust self-message filtering
   const isSelfMessage = message.senderInboxId.toLowerCase() === client.inboxId.toLowerCase();
-  const isTextMessage = message.contentType?.typeId === "text";
   
   if (isSelfMessage) {
     console.log(`Skipping self message 2 from ${message.senderInboxId}`);
     return;
   }
+  const isTextMessage = message.contentType?.typeId === "text";
+  
+
   
   if (!isTextMessage) {
     console.log(`Skipping non-text message: ${message.contentType?.typeId}`);

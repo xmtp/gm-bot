@@ -2,18 +2,20 @@ import { Client, IdentifierKind, type Conversation, XmtpEnv,LogLevel } from "@xm
 import "dotenv/config";
 import { createSigner, getDbPath, getEncryptionKeyFromHex, validateEnvironment } from "../helpers/client.js";
 import { generatePrivateKey } from "viem/accounts";
+import fs from "node:fs";
+import path from "node:path";
 
-const { ENCRYPTION_KEY,LOGGING_LEVEL,XMTP_ENV } = validateEnvironment([
+const { ENCRYPTION_KEY,LOGGING_LEVEL,XMTP_ENV,ADDRESS } = validateEnvironment([
     "ENCRYPTION_KEY",
-    "LOGGING_LEVEL",
-    "XMTP_ENV"
+    "LOGGING_LEVEL",  
+    "XMTP_ENV",
+    "ADDRESS"
 ]);
 
 // yarn stress --address 0x362d666308d90e049404d361b29c41bda42dd38b --users 5
 
 interface Config {
   userCount: number;
-  botAddress: string;
   timeout: number;
   env: string;
 }
@@ -22,7 +24,6 @@ function parseArgs(): Config {
   const args = process.argv.slice(2);
   const config: Config = {
     userCount: 5,
-    botAddress: "",
     timeout: 120 * 1000, // 120 seconds - increased for XMTP operations
     env: XMTP_ENV,
   };
@@ -34,25 +35,53 @@ function parseArgs(): Config {
     if (arg === "--users" && nextArg) {
       config.userCount = parseInt(nextArg, 10);
       i++;
-    } else if (arg === "--address" && nextArg) {
-      config.botAddress = nextArg;
-      i++;
-    } else if (arg === "--timeout" && nextArg) {
-      config.timeout = parseInt(nextArg, 10) * 1000;
-      i++;
-    } else if (arg === "--env" && nextArg) {
-      config.env = nextArg;
-      i++;
-    }
+    } 
   }
 
   return config;
 }
 
+async function cleanupStressDatabases(env: string): Promise<void> {
+  const volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp";
+  const dataDir = path.resolve(volumePath);
+  
+  if (!fs.existsSync(dataDir)) {
+    console.log(`🧹 No data directory found at ${dataDir}, skipping cleanup`);
+    return;
+  }
+
+  try {
+    const files = fs.readdirSync(dataDir);
+    const stressFiles = files.filter(file => 
+      file.startsWith(`stress-`) 
+    );
+    
+    if (stressFiles.length === 0) {
+      console.log(`🧹 No stress test database files found for env: ${env}`);
+      return;
+    }
+
+    console.log(`🧹 Cleaning up ${stressFiles.length} stress test database files...`);
+    
+    for (const file of stressFiles) {
+      const filePath = path.join(dataDir, file);
+      fs.unlinkSync(filePath);
+      console.log(`🗑️  Removed: ${file}`);
+    }
+    
+    console.log(`✅ Cleanup completed`);
+  } catch (error) {
+    console.error(`❌ Error during cleanup:`, error);
+  }
+}
+
 async function runStressTest(config: Config): Promise<void> {
   console.log(
-    `🚀 Testing ${config.userCount} users against ${config.botAddress}`,
+    `🚀 Testing ${config.userCount} users against ${ADDRESS}`,
   );
+
+  // Clean up previous stress test database files
+  await cleanupStressDatabases(config.env);
 
   const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
 
@@ -97,7 +126,7 @@ async function runStressTest(config: Config): Promise<void> {
           const newDmStart = Date.now();
           const conversation =
             (await worker.conversations.newDmWithIdentifier({
-              identifier: config.botAddress,
+              identifier: ADDRESS,
               identifierKind: IdentifierKind.Ethereum,
             })) as Conversation;
           const newDmTime = Date.now() - newDmStart;
