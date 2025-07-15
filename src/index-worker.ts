@@ -4,19 +4,16 @@ import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment }
 import Piscina from "piscina";
 import { resolve } from "path";
 
-const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
+const { WALLET_KEY, ENCRYPTION_KEY,XMTP_ENV } = validateEnvironment([
   "WALLET_KEY",
   "ENCRYPTION_KEY",
+  "XMTP_ENV"
 ]);
 
 const signer = createSigner(WALLET_KEY as `0x${string}`);
 const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
-const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
+const env: XmtpEnv = XMTP_ENV as XmtpEnv;
 
-const MAX_RETRIES = 5;
-const RETRY_INTERVAL = 5000;
-
-let retries = MAX_RETRIES;
 let client: Client;
 let messageCount = 0;
 let currentStream: any = null;
@@ -28,23 +25,6 @@ const pool = new Piscina({
   minThreads: 1,
 });
 
-const retry = () => {
-  console.log(`Retrying in ${RETRY_INTERVAL / 1000}s, ${retries} retries left`);
-  if (retries > 0) {
-    retries--;
-    setTimeout(() => {
-      handleStream(client);
-    }, RETRY_INTERVAL);
-  } else {
-    console.log("Max retries reached, ending process");
-    process.exit(1);
-  }
-};
-
-const onFail = () => {
-  console.log("Stream failed");
-  retry();
-};
 
 const onMessage = async (err: Error | null, message?: DecodedMessage) => {
   if (err) {
@@ -75,8 +55,6 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
       XMTP_ENV: env,
     }
   }).catch(() => {}); // Silent catch - main thread doesn't care about worker results
-
-  retries = MAX_RETRIES;
 };
 
 const handleStream = async (client: Client) => {
@@ -96,7 +74,6 @@ const handleStream = async (client: Client) => {
     onMessage,
     undefined,
     undefined,
-    onFail,
   );
 
   console.log("Waiting for messages...");
