@@ -56,11 +56,10 @@ async function runStressTest(config: Config): Promise<void> {
 
   const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
 
-  // Initialize workers
-  console.log(`📋 Initializing ${config.userCount} workers...`);
-  const workers: Client[] = [];
+  // Initialize workers concurrently
+  console.log(`📋 Initializing ${config.userCount} workers concurrently...`);
   
-  for (let i = 0; i < config.userCount; i++) {
+  const workerPromises = Array.from({ length: config.userCount }, async (_, i) => {
     const workerKey = generatePrivateKey();
     const signer = createSigner(workerKey);
     const signerIdentifier = (await signer.getIdentifier()).identifier;
@@ -72,10 +71,12 @@ async function runStressTest(config: Config): Promise<void> {
       dbEncryptionKey
     });
     
-    workers.push(client);
-  }
+    console.log(`✅ Worker ${i} initialized successfully`);
+    return client;
+  });
   
-  console.log(`✅ Workers initialized successfully`);
+  const workers = await Promise.all(workerPromises);
+  console.log(`✅ All ${config.userCount} workers initialized successfully`);
 
   // Run all workers in parallel
   console.log(`🔄 Starting parallel worker execution...`);
