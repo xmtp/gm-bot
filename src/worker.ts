@@ -21,15 +21,14 @@ async function initializeClient(env: SendTask['env']) {
   if (client) return client;
   
   const signer = createSigner(env.WALLET_KEY as `0x${string}`);
+  const signerIdentifier = (await signer.getIdentifier()).identifier;
   const dbEncryptionKey = getEncryptionKeyFromHex(env.ENCRYPTION_KEY);
-  
-  // // Get the wallet address from the signer
-  // const identifier = await signer.getIdentifier();
+  const dbPath = getDbPath("receive" + "-" + env + "-" + signerIdentifier);
   
   client = await Client.create(signer, {
     dbEncryptionKey,
-      env: env.XMTP_ENV as XmtpEnv,
-    dbPath: getDbPath("receive" + "-" + env.XMTP_ENV),
+    env: env.XMTP_ENV as XmtpEnv,
+    dbPath,
     loggingLevel: process.env.LOGGING_LEVEL as any,
   });
   
@@ -41,8 +40,11 @@ export default async function sendMessage({ message, conversationId, workerId, e
     const sendClient = await initializeClient(env);
     const conversation = await sendClient.conversations.getConversationById(conversationId);
     
-    if (conversation) 
-      await conversation.send(message);
+    if (conversation)  conversation.send(message).then(() => {
+      console.log(`Worker ${workerId}: Sent response to conversation ${conversationId}`);
+    }).catch((error) => {
+      console.error(`Worker ${workerId}: Error sending message:`, error);
+    });
    
     
   } catch (error) {

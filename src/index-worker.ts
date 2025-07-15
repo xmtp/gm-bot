@@ -16,31 +16,40 @@ let messageCount = 0;
 
 
 const sendPool = new Piscina({
-  filename: resolve(process.cwd(), 'dist/src/sendWorker.js'),
-  maxThreads: 5,
+  filename: resolve(process.cwd(), 'dist/src/worker.js'),
+  maxThreads: 2,
   minThreads: 1,
 });
 
 
 const onMessage = async (err: Error | null, message?: DecodedMessage) => {
-  if (
-    message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
-    message?.contentType?.typeId !== "text"
-  ) {
+  if (err) {
+    console.error("Message stream error:", err);
     return;
   }
 
-  messageCount++;
+  if (!message) {
+    return;
+  }
+
+  // More robust self-message filtering
+  const isSelfMessage = message.senderInboxId.toLowerCase() === client.inboxId.toLowerCase();
+  const isTextMessage = message.contentType?.typeId === "text";
   
-  // Skip messages from self or non-text messages
-  console.log(
-    `Received message: ${message.content as string} by ${message.senderInboxId}`
-  );
+  if (isSelfMessage) {
+    console.log(`Skipping self message 2 from ${message.senderInboxId}`);
+    return;
+  }
+  
+  if (!isTextMessage) {
+    console.log(`Skipping non-text message: ${message.contentType?.typeId}`);
+    return;
+  }
+
 
   sendPool.run({
     conversationId: message.conversationId,
     message: message.content as string,
-    workerId: messageCount,
     env: {
       WALLET_KEY,
       ENCRYPTION_KEY,
@@ -59,7 +68,7 @@ async function main() {
   const env: XmtpEnv = XMTP_ENV as XmtpEnv;
   const signerIdentifier = (await signer.getIdentifier()).identifier;
   console.log(`Creating ultra-light client on '${env}' network... ${signerIdentifier}`);
-  const dbPath = getDbPath("receive" + "-" + env);
+  const dbPath = getDbPath("receive" + "-" + env + "-" + signerIdentifier);
   console.log(`DB Path: ${dbPath}`);
   
   // Main thread client - ONLY for streaming (absolute minimum)
