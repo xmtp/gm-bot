@@ -90,18 +90,6 @@ async function runStressTest(config: Config): Promise<void> {
       let sendCompleteTime = 0;
       let sendTime = 0;
 
-      const timeout = setTimeout(() => {
-        if (!responseReceived) {
-          console.log(`❌ Worker ${i} timed out`);
-          resolve({
-            success: false,
-            newDmTime: 0,
-            sendTime: 0,
-            responseTime: 0,
-          });
-        }
-      }, config.timeout);
-
       const process = async () => {
         try {
           console.log(`🔧 Worker ${i}: Creating new DM...`);
@@ -128,13 +116,10 @@ async function runStressTest(config: Config): Promise<void> {
                 !responseReceived
               ) {
                 responseReceived = true;
-                clearTimeout(timeout);
 
                 // 3. Calculate response time
                 const responseTime = Date.now() - sendCompleteTime;
-                console.log(
-                  `🎉 Worker ${i}: Bot responded in ${responseTime}ms`,
-                );
+               
                 console.log(
                   `✅ Worker ${i}: NewDM=${newDmTime}ms, Send=${sendTime}ms, Response=${responseTime}ms`,
                 );
@@ -152,8 +137,6 @@ async function runStressTest(config: Config): Promise<void> {
           console.log(`📩 Worker ${i}: Message sent in ${sendTime}ms`);
           console.log(`⏳ Worker ${i}: Waiting for bot response...`);
         } catch (error) {
-          console.log(`❌ Worker ${i} failed:`, error);
-          clearTimeout(timeout);
           resolve({
             success: false,
             newDmTime: 0,
@@ -169,30 +152,41 @@ async function runStressTest(config: Config): Promise<void> {
     });
   });
 
-  // Wait for all workers
+  // Wait for all workers with global timeout
   console.log(`⏳ Waiting for all workers to complete...`);
-  const results = await Promise.all(promises);
-  console.log(`🏁 All workers completed`);
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`Test timed out after ${config.timeout}ms`));
+    }, config.timeout);
+  });
 
-  const successful = results.filter((r) => r.success);
+  try {
+    const results = await Promise.race([Promise.all(promises), timeoutPromise]);
+    console.log(`🏁 All workers completed`);
 
-  console.log(
-    `📊 Results: ${successful.length}/${config.userCount} successful (${Math.round((successful.length / config.userCount) * 100)}%)`,
-  );
-
-  if (successful.length > 0) {
-    const avgNewDm =
-      successful.reduce((sum, r) => sum + r.newDmTime, 0) / successful.length;
-    const avgSend =
-      successful.reduce((sum, r) => sum + r.sendTime, 0) / successful.length;
-    const avgResponse =
-      successful.reduce((sum, r) => sum + r.responseTime, 0) /
-      successful.length;
+    const successful = results.filter((r) => r.success);
 
     console.log(
-      `📈 Averages: NewDM=${Math.round(avgNewDm)}ms, Send=${Math.round(avgSend)}ms, Response=${Math.round(avgResponse)}ms`,
+      `📊 Results: ${successful.length}/${config.userCount} successful (${Math.round((successful.length / config.userCount) * 100)}%)`,
     );
+
+    if (successful.length > 0) {
+      const avgNewDm =
+        successful.reduce((sum, r) => sum + r.newDmTime, 0) / successful.length;
+      const avgSend =
+        successful.reduce((sum, r) => sum + r.sendTime, 0) / successful.length;
+      const avgResponse =
+        successful.reduce((sum, r) => sum + r.responseTime, 0) /
+        successful.length;
+
+      console.log(
+        `📈 Averages: NewDM=${Math.round(avgNewDm)}ms, Send=${Math.round(avgSend)}ms, Response=${Math.round(avgResponse)}ms`,
+      );
+    }
+  } catch (error) {
+    console.log(`❌ Test timed out - shutting down`);
   }
+  
   process.exit(0);
 }
 
