@@ -93,7 +93,6 @@ async function runStressTest(config: Config): Promise<void> {
 
       const process = async () => {
         try {
-          console.log(`🔧 Worker ${i}: Creating new DM...`);
           // 1. Time NewDM creation
           const newDmStart = Date.now();
           const conversation =
@@ -136,14 +135,8 @@ async function runStressTest(config: Config): Promise<void> {
           sendTime = Date.now() - sendStart;
           sendCompleteTime = Date.now();
           console.log(`📩 Worker ${i}: Message sent in ${sendTime}ms`);
-          console.log(`⏳ Worker ${i}: Waiting for bot response...`);
         } catch (error) {
-          resolve({
-            success: false,
-            newDmTime: 0,
-            sendTime: 0,
-            responseTime: 0,
-          });
+         console.error(error);
         }
       };
 
