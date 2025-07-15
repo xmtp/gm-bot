@@ -44,8 +44,11 @@ export default async function sendMessage({ message, conversationId, workerId, e
     const conversation = await sendClient.conversations.getConversationById(conversationId);
     
     if (conversation) {
-      await conversation.send(message);
-      console.log(`✅ Worker ${workerId}: Sent response to conversation ${conversationId}`);
+       conversation.send(message).then(() => {
+        console.log(`✅ Worker ${workerId}: Sent response to conversation ${conversationId}`);
+       }).catch((error) => {
+        console.error(`❌ Worker ${workerId}: Error sending message:`, error);
+       });
     } else {
       console.log(`❌ Worker ${workerId}: Conversation not found ${conversationId}`);
     }
