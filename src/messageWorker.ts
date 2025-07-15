@@ -33,28 +33,12 @@ async function initializeClient(env: MessageTask['env'], sharedDbPath: string) {
 }
 
 export default async function processMessage({ message, clientInboxId, workerId, sharedDbPath, env }: MessageTask) {
-  try {
     const workerClient = await initializeClient(env, sharedDbPath);
 
-    if (message?.senderInboxId.toLowerCase() === clientInboxId.toLowerCase() || message?.contentType?.typeId !== "text") {
-      return { success: true, skipped: true, messageId: message.id };
-    }
+    if (message?.senderInboxId.toLowerCase() === clientInboxId.toLowerCase()) return;
 
     await workerClient.conversations.sync();
     const conversation = await workerClient.conversations.getConversationById(message.conversationId);
 
-    if (!conversation) {
-      return { success: false, error: 'Conversation not found', messageId: message.id };
-    }
-
-    await conversation.send("gm: " + message.content);
-    return { success: true, messageId: message.id, workerId };
-  } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error',
-      messageId: message.id,
-      workerId 
-    };
-  }
+    if (conversation) conversation.send("gm: " + message.content);
 } 
