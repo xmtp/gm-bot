@@ -120,6 +120,7 @@ async function main() {
     env,
     dbPath: getDbPath(env + "-" + signerIdentifier),  
     loggingLevel: process.env.LOGGING_LEVEL as any,
+    disableDeviceSync: true,
   });
   logAgentDetails(client);
 

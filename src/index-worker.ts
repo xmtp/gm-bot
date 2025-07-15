@@ -81,10 +81,11 @@ async function main() {
     env,
     dbPath,  
     loggingLevel: process.env.LOGGING_LEVEL as any,
+    disableDeviceSync: true,
   });
 
   console.log("Syncing conversations...");
-  await client.conversations.syncAll();
+  await client.conversations.sync();
 
   client.conversations.streamAllMessages(
     onMessage,

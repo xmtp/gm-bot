@@ -32,6 +32,7 @@ async function initializeClient(env: SendTask['env']) {
     env: env.XMTP_ENV as XmtpEnv,
     dbPath,
     loggingLevel: process.env.LOGGING_LEVEL as any,
+    disableDeviceSync: true,
   });
 
   // Initial sync for new client
