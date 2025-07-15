@@ -39,9 +39,9 @@ export default async function processMessage({ message, clientInboxId, workerId,
     if (message?.senderInboxId.toLowerCase() === clientInboxId.toLowerCase()) return;
 
     await workerClient.conversations.sync();
-    const conversation = await workerClient.conversations.getConversationById(message.conversationId);
+    // const conversation = await workerClient.conversations.getConversationById(message.conversationId);
 
-    if (conversation) await conversation.send("gm: " + message.content);
+    // if (conversation) await conversation.send("gm: " + message.content);
   } catch (error) {
     console.error(`Worker ${workerId}: Error processing message:`, error);
   }
