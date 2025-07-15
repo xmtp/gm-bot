@@ -66,10 +66,9 @@ async function cleanupStressDatabases(env: string): Promise<void> {
     for (const file of stressFiles) {
       const filePath = path.join(dataDir, file);
       fs.unlinkSync(filePath);
-      console.log(`🗑️  Removed: ${file}`);
     }
     
-    console.log(`✅ Cleanup completed`);
+    console.log(`🗑️  Removed: ${stressFiles.length} stress test database files`);
   } catch (error) {
     console.error(`❌ Error during cleanup:`, error);
   }
