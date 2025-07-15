@@ -1,14 +1,13 @@
 
-import { Client, type XmtpEnv } from "@xmtp/node-sdk";
-import { createSigner, getDbPath, getEncryptionKeyFromHex, validateEnvironment } from "../helpers/client.js";
+import { Client, DecodedMessage, type XmtpEnv } from "@xmtp/node-sdk";
+import { createSigner, getDbPath, getEncryptionKeyFromHex } from "../helpers/client.js";
 
 let client: Client | null = null;
 let conversationCache = new Map<string, any>();
 let lastSyncTime = 0;
 
-
-
 interface SendTask {
+  type: 'send';
   conversationId: string;
   message: string;
   workerId: number;
@@ -19,13 +18,25 @@ interface SendTask {
   };
 }
 
-async function initializeClient(env: SendTask['env']) {
+interface StreamTask {
+  type: 'stream';
+  env: {
+    WALLET_KEY: string;
+    ENCRYPTION_KEY: string;
+    XMTP_ENV: string;
+  };
+}
+
+type WorkerTask = SendTask | StreamTask;
+
+async function initializeClient(env: WorkerTask['env']) {
   if (client) return client;
+  
   
   const signer = createSigner(env.WALLET_KEY as `0x${string}`);
   const signerIdentifier = (await signer.getIdentifier()).identifier;
   const dbEncryptionKey = getEncryptionKeyFromHex(env.ENCRYPTION_KEY);
-  const dbPath = getDbPath(`receive-${env.XMTP_ENV}-${signerIdentifier}`);
+  const dbPath = getDbPath(`worker-${env.XMTP_ENV}-${signerIdentifier}`);
   
   client = await Client.create(signer, {
     dbEncryptionKey,
@@ -35,7 +46,6 @@ async function initializeClient(env: SendTask['env']) {
     disableDeviceSync: true,
   });
 
-  // Initial sync for new client
   await client.conversations.sync();
   lastSyncTime = Date.now();
   
@@ -43,12 +53,10 @@ async function initializeClient(env: SendTask['env']) {
 }
 
 async function getConversation(client: Client, conversationId: string): Promise<any> {
-  // Check cache first
   if (conversationCache.has(conversationId)) {
     return conversationCache.get(conversationId)!;
   }
   
-  // Incremental sync if needed (every 30 seconds)
   const now = Date.now();
   if (now - lastSyncTime > 30000) {
     await client.conversations.sync();
@@ -63,20 +71,80 @@ async function getConversation(client: Client, conversationId: string): Promise<
   return conversation;
 }
 
-export default async function sendMessage({ message, conversationId, workerId, env }: SendTask) {
-  try {
-    console.log(`🔄 Worker ${workerId}: Starting message processing...`);
-    const sendClient = await initializeClient(env);
-    
-    const conversation = await getConversation(sendClient, conversationId);
-    
-    if (conversation) {
-      await conversation.send(message);
-      console.log(`✅ Worker ${workerId}: Sent response to conversation ${conversationId}`);
-    } else {
-      console.log(`❌ Worker ${workerId}: Conversation not found ${conversationId}`);
+async function handleStream(env: StreamTask['env']) {
+  console.log("🔄 Worker: Starting message stream...");
+  const streamClient = await initializeClient(env);
+  
+  const onMessage = async (err: Error | null, message?: DecodedMessage) => {
+    if (err) {
+      console.error("Message stream error:", err);
+      return;
     }
+
+    if (!message) return;
+
+    const isSelfMessage = message.senderInboxId.toLowerCase() === streamClient.inboxId.toLowerCase();
+    
+    if (isSelfMessage) {
+      console.log(`Skipping self message from ${message.senderInboxId}`);
+      return;
+    }
+    
+    const isTextMessage = message.contentType?.typeId === "text";
+    
+    if (!isTextMessage) {
+      console.log(`Skipping non-text message: ${message.contentType?.typeId}`);
+      return;
+    }
+
+    console.log(`📨 Worker: Processing message from ${message.senderInboxId}`);
+    
+    try {
+      const conversation = await getConversation(streamClient, message.conversationId);
+      
+      if (conversation) {
+        const responseMessage = `GM! Thanks for your message: "${message.content as string}"`;
+        await conversation.send(responseMessage);
+        console.log(`✅ Worker: Sent response to conversation ${message.conversationId}`);
+      } else {
+        console.log(`❌ Worker: Conversation not found ${message.conversationId}`);
+      }
+    } catch (error) {
+      console.error(`❌ Worker: Error processing message:`, error);
+    }
+  };
+
+  streamClient.conversations.streamAllMessages(onMessage);
+  console.log("✅ Worker: Waiting for messages...");
+  
+  // Keep the worker alive indefinitely
+  return new Promise(() => {
+    // This promise never resolves, keeping the worker running
+  });
+}
+
+async function handleSend({ message, conversationId, workerId, env }: SendTask) {
+  try {
+    // console.log(`🔄 Worker ${workerId}: Starting message processing...`);
+    // const sendClient = await initializeClient(env);
+    
+    // const conversation = await getConversation(sendClient, conversationId);
+    
+    // if (conversation) {
+    //   await conversation.send(message);
+    //   console.log(`✅ Worker ${workerId}: Sent response to conversation ${conversationId}`);
+    // } else {
+    //   console.log(`❌ Worker ${workerId}: Conversation not found ${conversationId}`);
+    // }
   } catch (error) {
     console.error(`❌ Worker ${workerId}: Error sending message:`, error);
+  }
+}
+
+export default async function workerHandler(task: WorkerTask) {
+  if (task.type === 'stream') {
+    await handleStream(task.env);
+  } else if (task.type === 'send') {
+    await handleSend(task);
   }
 } 

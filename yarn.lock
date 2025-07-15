@@ -594,22 +594,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xmtp/node-bindings@npm:1.3.0-rc1":
-  version: 1.3.0-rc1
-  resolution: "@xmtp/node-bindings@npm:1.3.0-rc1"
-  checksum: 10c0/5562aa00cc02d934cbf85013f068899e5f2cb5383a6af7b9b0c341cf0c0a1d72d0ba57ffd61ff874cdb75621387d0d963cd90d0f75ec14ccc6a279a8dd762a09
+"@xmtp/node-bindings@npm:1.3.0-rc2":
+  version: 1.3.0-rc2
+  resolution: "@xmtp/node-bindings@npm:1.3.0-rc2"
+  checksum: 10c0/6196930f8bd0df7927b13399f3b1ca603b0fc42962af2f080e6555d1144dc9e8c592f366c82044e42584cfb4bdc2be65d9cf1dd66fc20310456e82f92bd7dbd9
   languageName: node
   linkType: hard
 
-"@xmtp/node-sdk@npm:3.2.0-rc1":
-  version: 3.2.0-rc1
-  resolution: "@xmtp/node-sdk@npm:3.2.0-rc1"
+"@xmtp/node-sdk@npm:3.2.0-rc2":
+  version: 3.2.0-rc2
+  resolution: "@xmtp/node-sdk@npm:3.2.0-rc2"
   dependencies:
     "@xmtp/content-type-group-updated": "npm:^2.0.2"
     "@xmtp/content-type-primitives": "npm:^2.0.2"
     "@xmtp/content-type-text": "npm:^2.0.2"
-    "@xmtp/node-bindings": "npm:1.3.0-rc1"
-  checksum: 10c0/cb0efd135e2d735fc1dd8b3aa5101fc36cd42ba27dcbb56019b988f1d9feeb49c6446319ef3c0e36e3311b7054779543f815ed80532cd050fa332f26543a2e72
+    "@xmtp/node-bindings": "npm:1.3.0-rc2"
+  checksum: 10c0/4e68615af7992aafa0f73b2e8329114badffb4d2f0058bbfa57f7dae182716da46fa0521d99dcb3560d4ad003a3471262c04db674ebc7fd217bdeb8fe0d508ac
   languageName: node
   linkType: hard
 
@@ -949,7 +949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:5.0.1, eventemitter3@npm:^5.0.1":
+"eventemitter3@npm:5.0.1":
   version: 5.0.1
   resolution: "eventemitter3@npm:5.0.1"
   checksum: 10c0/4ba5c00c506e6c786b4d6262cfbce90ddc14c10d4667e5c83ae993c9de88aa856033994dd2b35b83e8dc1170e224e66a319fa80adc4c32adcd2379bbc75da814
@@ -1050,10 +1050,9 @@ __metadata:
   resolution: "gm-bot@workspace:."
   dependencies:
     "@types/node": "npm:^20.14.2"
-    "@xmtp/node-sdk": "npm:3.2.0-rc1"
+    "@xmtp/node-sdk": "npm:3.2.0-rc2"
     concurrently: "npm:^9.2.0"
     dotenv: "npm:^16.4.5"
-    p-queue: "npm:^8.1.0"
     piscina: "npm:^5.1.3"
     tsx: "npm:^4.19.3"
     typescript: "npm:^5.7.3"
@@ -1389,23 +1388,6 @@ __metadata:
   version: 7.0.3
   resolution: "p-map@npm:7.0.3"
   checksum: 10c0/46091610da2b38ce47bcd1d8b4835a6fa4e832848a6682cf1652bc93915770f4617afc844c10a77d1b3e56d2472bb2d5622353fa3ead01a7f42b04fc8e744a5c
-  languageName: node
-  linkType: hard
-
-"p-queue@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "p-queue@npm:8.1.0"
-  dependencies:
-    eventemitter3: "npm:^5.0.1"
-    p-timeout: "npm:^6.1.2"
-  checksum: 10c0/6bdea170840546769c29682fed212745c951933476761ed3a981967fab624c7c0120dff79bd99a1ac8b650b420719a245813e944af4b8ee77d4dd78adbf5fe75
-  languageName: node
-  linkType: hard
-
-"p-timeout@npm:^6.1.2":
-  version: 6.1.4
-  resolution: "p-timeout@npm:6.1.4"
-  checksum: 10c0/019edad1c649ab07552aa456e40ce7575c4b8ae863191477f02ac8d283ac8c66cedef0ca93422735130477a051dfe952ba717641673fd3599befdd13f63bcc33
   languageName: node
   linkType: hard
 
