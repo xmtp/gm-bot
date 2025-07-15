@@ -33,6 +33,7 @@ async function initializeClient(env: MessageTask['env'], sharedDbPath: string) {
 }
 
 export default async function processMessage({ message, clientInboxId, workerId, sharedDbPath, env }: MessageTask) {
+  try {
     const workerClient = await initializeClient(env, sharedDbPath);
 
     if (message?.senderInboxId.toLowerCase() === clientInboxId.toLowerCase()) return;
@@ -41,4 +42,7 @@ export default async function processMessage({ message, clientInboxId, workerId,
     const conversation = await workerClient.conversations.getConversationById(message.conversationId);
 
     if (conversation) conversation.send("gm: " + message.content);
+  } catch (error) {
+    console.error(`Worker ${workerId}: Error processing message:`, error);
+  }
 } 

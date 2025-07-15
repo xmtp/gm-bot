@@ -22,7 +22,7 @@ function parseArgs(): Config {
   const args = process.argv.slice(2);
   const config: Config = {
     userCount: 5,
-    botAddress: "0x7f1c0d2955f873fc91f1728c19b2ed7be7a9684d",
+    botAddress: "",
     timeout: 60 * 1000, // 60 seconds
     env: XMTP_ENV,
   };
