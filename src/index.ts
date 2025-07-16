@@ -20,6 +20,7 @@ async function main() {
     env,
     loggingLevel: "debug" as LogLevel,
     dbPath: getDbPath("gm-bot-"+env),
+    disableDeviceSync: true,
   });
 
   console.log("Syncing conversations...");
@@ -49,12 +50,12 @@ async function main() {
 
     console.log(`Received: ${message.content} from ${message.senderInboxId}`);
     const conversation = await client.conversations.getConversationById(message.conversationId)
-      if(!conversation) {
-        console.log(`Conversation not found: ${message.conversationId}`);
-        return;
-      }
-      await conversation.send("gm: " + message.content);
-      console.log(`Replied to: ${message.content}`);
+    if(!conversation) {
+      console.log(`Conversation not found: ${message.conversationId}`);
+      return;
+    }
+    conversation.send("gm: " + message.content);
+    console.log(`Replied to: ${message.content}`);
     
   }
   client.conversations.streamAllMessages(onMessage);
