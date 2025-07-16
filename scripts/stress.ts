@@ -37,7 +37,7 @@ function parseArgs(): Config {
   const args = process.argv.slice(2);
   const config: Config = {
     userCount: 5,
-    timeout: 30 * 1000, // 120 seconds - increased for XMTP operations
+    timeout: 20 * 1000, // 120 seconds - increased for XMTP operations
     env: XMTP_ENV,
     address:ADDRESS,
     tresshold: 95

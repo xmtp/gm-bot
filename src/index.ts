@@ -1,63 +1,125 @@
 import "dotenv/config";
-import { Client, DecodedMessage, LogLevel, type XmtpEnv } from "@xmtp/node-sdk";
-import { createSigner, getDbPath, getEncryptionKeyFromHex } from "../helpers/client";
+import { Client, DecodedMessage, type XmtpEnv } from "@xmtp/node-sdk";
+import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "../helpers/client";
 
-const { WALLET_KEY, ENCRYPTION_KEY, XMTP_ENV } = process.env;
-
-if (!WALLET_KEY || !ENCRYPTION_KEY) {
-  throw new Error("WALLET_KEY and ENCRYPTION_KEY must be set");
-}
+const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
+  "WALLET_KEY",
+  "ENCRYPTION_KEY",
+]);
 
 const signer = createSigner(WALLET_KEY as `0x${string}`);
 const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
-const env: XmtpEnv = (XMTP_ENV as XmtpEnv) || "dev";
 
-async function main() {
-  console.log(`Creating client on the '${env}' network...`);
+const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
+
+const MAX_RETRIES = 5;
+// wait 5 seconds before each retry
+const RETRY_INTERVAL = 5000;
+
+let retries = MAX_RETRIES;
+let client: Client;
+let messageCount = 0;
+let currentStream: any = null; // Store reference to current stream
+
+const retry = () => {
+  console.log(
+    `Retrying in ${RETRY_INTERVAL / 1000}s, ${retries} retries left`,
+  );
+  if (retries > 0) {
+    retries--;
+    setTimeout(() => {
+      handleStream(client);
+    }, RETRY_INTERVAL);
+  } else {
+    console.log("Max retries reached, ending process");
+    process.exit(1);
+  }
+};
+
+const onFail = () => {
+  console.log("Stream failed");
+  retry();
+};
+
+const onMessage = async (err: Error | null, message?: DecodedMessage) => {
+  if (err) {
+    console.log("Error", err);
+    return;
+  }
+
+  if (!message) {
+    console.log("No message received");
+    return;
+  }
+
+  if (
+    message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
+    message?.contentType?.typeId !== "text"
+  ) {
+    return;
+  }
+
+  messageCount++;
+  console.log(
+    `[${messageCount}] Received message: ${message.content as string} by ${
+      message.senderInboxId
+    }`
+  );
+
+  const conversation = await client.conversations.getConversationById(
+    message.conversationId
+  );
+
+  if (!conversation) {
+    console.log("Unable to find conversation, skipping");
+    return;
+  }
+
+  conversation.send("gm").then(() => {
+    console.log("Replied to message: ", message.content as string);
+  }).catch(console.error);
   
-  const client = await Client.create(signer, {
-    dbEncryptionKey,
-    env,
-    loggingLevel: "debug" as LogLevel,
-    dbPath: getDbPath("gm-bot-"+env),
-  });
+  // Reset retry count on successful message processing
+  retries = MAX_RETRIES;
+};
+
+const handleStream = async (client: Client) => {
+  // Clean up existing stream if it exists
+  if (currentStream) {
+    console.log("Cleaning up existing stream");
+    try {
+      await currentStream.return();
+    } catch (e) {
+      console.log("Error cleaning up stream:", e);
+    }
+    currentStream = null;
+  }
 
   console.log("Syncing conversations...");
   await client.conversations.sync();
 
-  const identifier = await signer.getIdentifier();
-  console.log(`Agent initialized on ${identifier.identifier}`);
+  currentStream = await client.conversations.streamAllMessages(
+    onMessage,
+    undefined,
+    undefined,
+    onFail,
+  );
 
   console.log("Waiting for messages...");
-  const onMessage = async (err: Error | null | undefined, message?: DecodedMessage) => {
-    if (err) {
-      console.error("Message stream error:", err);
-      return;
-    }
+};
 
-    if (!message) {
-      return;
-    }
+async function main() {
+  console.log(`Creating client on the '${env}' network...`);
+  const signerIdentifier = (await signer.getIdentifier()).identifier;
+  client = await Client.create(signer, {
+    dbEncryptionKey,
+    env,
+    dbPath: getDbPath(env + "-" + signerIdentifier),  
+    loggingLevel: process.env.LOGGING_LEVEL as any,
+  });
+  logAgentDetails(client);
 
-    if(message.contentType?.typeId !== "text") {
-      return;
-    }
-
-    if(message.senderInboxId.toLowerCase() === client.inboxId.toLowerCase()) {
-      return;
-    }
-
-    console.log(`Received: ${message.content} from ${message.senderInboxId}`);
-    const conversation = await client.conversations.getConversationById(message.conversationId)
-      if(!conversation) {
-        console.log(`Conversation not found: ${message.conversationId}`);
-        return;
-      }
-      await conversation.send("gm: " + message.content);
-      console.log(`Replied to: ${message.content}`);
-    
-  }
-  client.conversations.streamAllMessages(onMessage);
+  await handleStream(client);
 }
 
 main().catch(console.error);
