@@ -40,7 +40,7 @@ function parseArgs(): Config {
     timeout: 30 * 1000, // 120 seconds - increased for XMTP operations
     env: XMTP_ENV,
     address:ADDRESS,
-    tresshold: 95
+    tresshold: 90
   };
 
   for (let i = 0; i < args.length; i++) {

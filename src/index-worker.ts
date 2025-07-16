@@ -38,30 +38,20 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
   const isTextMessage = message.contentType?.typeId === "text";
-  
-
-  
   if (!isTextMessage) {
     console.log(`Skipping non-text message: ${message.contentType?.typeId}`);
     return;
   }
 
-
-  const workerId = Math.floor(Math.random() * 1000); // Generate unique worker ID
-  console.log(`📨 Processing message from ${message.senderInboxId} with worker ${workerId}`);
-  
   sendPool.run({
     conversationId: message.conversationId,
     message: `GM! Thanks for your message: "${message.content as string}"`,
-    workerId,
     env: {
       WALLET_KEY,
       ENCRYPTION_KEY,
       XMTP_ENV
     } 
-  }).catch((error) => {
-    console.error(`Worker ${workerId} error:`, error);
-  });
+  })
 };
 
 
@@ -84,7 +74,7 @@ async function main() {
   });
 
   console.log("Syncing conversations...");
-  await client.conversations.syncAll();
+  await client.conversations.sync();
 
   client.conversations.streamAllMessages(
     onMessage,
