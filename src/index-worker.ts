@@ -16,8 +16,8 @@ let client: Client;
 
 const sendPool = new Piscina({
   filename: resolve(process.cwd(), 'dist/src/worker.js'),
-  maxThreads: 4,
-  minThreads: 2,
+  maxThreads: 200,
+  minThreads: 200,
 });
 
 
