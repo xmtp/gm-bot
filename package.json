@@ -9,7 +9,8 @@
     "stress": "tsx scripts/stress.ts",
     "dev": "tsx  src/index.ts",
     "dev:worker": "yarn build && concurrently \"tsc --watch\" \"tsx --watch src/index-worker.ts\"",
-    "gen:keys": "tsx scripts/generateKeys.ts"
+    "gen:keys": "tsx scripts/generateKeys.ts",
+    "link-packages": "tsx scripts/link-packages.ts"
   },
   "dependencies": {
     "@xmtp/node-sdk": "3.2.0-rc2",
@@ -28,11 +29,6 @@
   "engines": {
     "node": ">=20"
   },
-  "packageExtensions": {
-    "@xmtp/node-sdk:": {
-      "dependencies": {
-        "@xmtp/node-bindings": "1.4.0-dev.ad95443"
-      }
-    }
-  }
+ 
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
