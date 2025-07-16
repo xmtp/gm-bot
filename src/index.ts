@@ -1,12 +1,9 @@
 import "dotenv/config";
-import { Client, DecodedMessage, LogLevel, type XmtpEnv } from "@xmtp/node-sdk";
-import { createSigner, getDbPath, getEncryptionKeyFromHex } from "../helpers/client";
+import { Client,  LogLevel, type XmtpEnv } from "@xmtp/node-sdk";
+import { createSigner, getDbPath, getEncryptionKeyFromHex, logAgentDetails, validateEnvironment } from "../helpers/client";
 
-const { WALLET_KEY, ENCRYPTION_KEY, XMTP_ENV } = process.env;
+const { WALLET_KEY, ENCRYPTION_KEY, XMTP_ENV, LOGGING_LEVEL } = validateEnvironment(["WALLET_KEY", "ENCRYPTION_KEY", "XMTP_ENV", "LOGGING_LEVEL"]);
 
-if (!WALLET_KEY || !ENCRYPTION_KEY) {
-  throw new Error("WALLET_KEY and ENCRYPTION_KEY must be set");
-}
 
 const signer = createSigner(WALLET_KEY as `0x${string}`);
 const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
@@ -18,47 +15,24 @@ async function main() {
   const client = await Client.create(signer, {
     dbEncryptionKey,
     env,
-    loggingLevel: "debug" as LogLevel,
+    loggingLevel: LOGGING_LEVEL as LogLevel,
     dbPath: getDbPath("gm-bot-"+env),
     disableDeviceSync: true,
   });
 
   console.log("Syncing conversations...");
   await client.conversations.sync();
-
+  logAgentDetails(client);
   const identifier = await signer.getIdentifier();
   console.log(`Agent initialized on ${identifier.identifier}`);
-
-  console.log("Waiting for messages...");
-  const onMessage = async (err: Error | null | undefined, message?: DecodedMessage) => {
-    if (err) {
-      console.error("Message stream error:", err);
-      return;
-    }
-
-    if (!message) {
-      return;
-    }
-
-    if(message.contentType?.typeId !== "text") {
-      return;
-    }
-
-    if(message.senderInboxId.toLowerCase() === client.inboxId.toLowerCase()) {
-      return;
-    }
-
-    console.log(`Received: ${message.content} from ${message.senderInboxId}`);
-    const conversation = await client.conversations.getConversationById(message.conversationId)
-    if(!conversation) {
-      console.log(`Conversation not found: ${message.conversationId}`);
-      return;
-    }
-    conversation.send("gm: " + message.content);
-    console.log(`Replied to: ${message.content}`);
-    
+  let messageCount = 0;
+  console.log("Waiting for conversations...");
+  
+  const stream = await client.conversations.streamAllMessages();
+  for await (const message of stream) {
+    const minuteAndSecond=new Date().toLocaleTimeString('en-US', {  hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    console.log(minuteAndSecond, ":",messageCount++, ":",message?.content);
   }
-  client.conversations.streamAllMessages(onMessage);
 }
 
 main().catch(console.error);

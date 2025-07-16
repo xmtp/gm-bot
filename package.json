@@ -6,14 +6,15 @@
     "build": "tsc",
     "start": "tsx src/index.ts",
     "dev": "tsx --watch src/index.ts",
+    "dev:logto": "tsx --watch src/index.ts > logto.txt",
     "revoke": "tsx scripts/revokeInstallations.ts",
     "stress": "tsx scripts/stress.ts",
     "gen:keys": "tsx scripts/generateKeys.ts",
     "packages": "tsx scripts/packages.ts"
   },
   "dependencies": {
-    "@xmtp/node-sdk": "3.2.0-rc2",
-    "@xmtp/node-bindings": "1.4.0-dev.ad95443",
+    "@xmtp/node-sdk": "3.2.0",
+    "@xmtp/node-bindings": "1.4.0-dev.fe551c5",
     "piscina": "^5.1.3",
     "uint8arrays": "^5.1.0",
     "viem": "^2.22.17"
