@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsx   src/index.ts",
-    "dev": "tsx   src/index.ts",
+    "start": "tsx src/index.ts",
+    "dev": "tsx --watch src/index.ts",
     "revoke": "tsx scripts/revokeInstallations.ts",
     "stress": "tsx scripts/stress.ts",
     "gen:keys": "tsx scripts/generateKeys.ts",
