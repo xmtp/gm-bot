@@ -6,10 +6,11 @@
     "build": "tsc",
     "start": "tsx   src/index.ts",
     "dev": "tsx --watch  src/index.ts",
+    "dev:fast": "tsx --watch  src/index-fast.ts",
     "revoke": "tsx scripts/revokeInstallations.ts",
     "stress": "tsx scripts/stress.ts",
     "gen:keys": "tsx scripts/generateKeys.ts",
-    "versions": "tsx scripts/versions.ts"
+    "link:versions": "tsx scripts/versions.ts"
   },
   "dependencies": {
     "@xmtp/node-sdk": "3.2.0-rc2",
