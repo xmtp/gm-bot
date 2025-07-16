@@ -1,7 +1,7 @@
 import "dotenv/config";
-import { Client, DecodedMessage, type XmtpEnv } from "@xmtp/node-sdk";
-import { getDbPath, createSigner, getEncryptionKeyFromHex, validateEnvironment, logAgentDetails } from "../helpers/client";
-
+import { Client, type XmtpEnv } from "@xmtp/node-sdk";
+import { createSigner, getEncryptionKeyFromHex, logAgentDetails, validateEnvironment } from "../helpers/client";
+  
 const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
   "WALLET_KEY",
   "ENCRYPTION_KEY",
@@ -9,109 +9,36 @@ const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
 
 const signer = createSigner(WALLET_KEY as `0x${string}`);
 const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
-
 const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
 
-const MAX_RETRIES = 5;
-// wait 5 seconds before each retry
-const RETRY_INTERVAL = 5000;
-
-let retries = MAX_RETRIES;
-let client: Client;
-let messageCount = 1;
-let currentStream: any = null;
-
-const retry = () => {
-  console.log(
-    `Retrying in ${RETRY_INTERVAL / 1000}s, ${retries} retries left`,
-  );
-  if (retries > 0) {
-    retries--;
-    setTimeout(() => {
-      handleStream(client);
-    }, RETRY_INTERVAL);
-  } else {
-    console.log("Max retries reached, ending process");
-    process.exit(1);
-  }
-};
-
-const onFail = () => {
-  console.log("Stream failed");
-  retry();
-};
-
-const onMessage = async (err: Error | null, message?: DecodedMessage) => {
-  if (err) {
-    console.log("Error", err);
-    return;
-  }
-  if (!message) {
-    console.log("No message received");
-    return;
-  }
-  if (
-    message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
-    message?.contentType?.typeId !== "text"
-  ) {
-    return;
-  }
-  const conversation = await client.conversations.getConversationById(
-    message.conversationId
-  );
-
-  if (!conversation) {
-    console.log("Unable to find conversation, skipping");
-    return;
-  }
-   conversation.send("gm: "+message.content)
-  messageCount++;
-  
-  console.log(messageCount+"_",message.content as string)
-
-  
-  // Reset retry count on successful message processing
-  retries = MAX_RETRIES;
-};
-
-const handleStream = async (client: Client) => {
-  // Clean up existing stream if it exists
-  if (currentStream) {
-    console.log("Cleaning up existing stream");
-    try {
-      await currentStream.return();
-    } catch (e) {
-      console.log("Error cleaning up stream:", e);
-    }
-    currentStream = null;
-  }
-
-  console.log("Syncing conversations...");
-  await client.conversations.sync();
-
-  currentStream = await client.conversations.streamAllMessages(
-    onMessage,
-    undefined,
-    undefined,
-    onFail,
-  );
-
-  console.log("Waiting for messages...");
-};
-
 async function main() {
-  console.log(`Creating client on the '${env}' network...`);
-  const signerIdentifier = (await signer.getIdentifier()).identifier;
-  client = await Client.create(signer, {
+  const client = await Client.create(signer, {
     dbEncryptionKey,
     env,
-    dbPath: getDbPath(env + "-" + signerIdentifier),  
-    loggingLevel: process.env.LOGGING_LEVEL as any,
-    disableDeviceSync: true,
   });
-  logAgentDetails(client);
-
-  await handleStream(client);
+  await client.conversations.sync();
+  console.log("Synced")
+  const stream = await client.conversations.streamAllMessages();
+  let messageCount = 1;
+  for await (const message of stream) {
+    if (
+      message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
+      message?.contentType?.typeId !== "text"
+    ) {
+      continue;
+    }
+    console.log(messageCount, message.content as string)
+    messageCount++;
+    const conversation = await client.conversations.getConversationById(
+      message.conversationId
+    );
+  
+    if (!conversation) {
+      console.log("Unable to find conversation, skipping");
+      return;
+    }
+     await conversation.send("gm: "+message.content)
+  }
 }
 
 main().catch(console.error);
