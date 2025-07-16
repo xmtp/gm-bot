@@ -4,13 +4,12 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsx   src/index.ts",
-    "dev": "tsx   src/index.ts",
-    "dev:fast": "tsx   src/index-fast.ts",
+    "start": "tsx src/index.ts",
+    "dev": "tsx --watch src/index.ts",
     "revoke": "tsx scripts/revokeInstallations.ts",
     "stress": "tsx scripts/stress.ts",
     "gen:keys": "tsx scripts/generateKeys.ts",
-    "link:versions": "tsx scripts/versions.ts"
+    "packages": "tsx scripts/packages.ts"
   },
   "dependencies": {
     "@xmtp/node-sdk": "3.2.0-rc2",

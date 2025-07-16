@@ -123,7 +123,6 @@ async function runStressTest(config: Config): Promise<void> {
 
       const client = await Client.create(signer, {
         env: config.env as XmtpEnv,
-        loggingLevel: process.env.LOGGING_LEVEL as LogLevel,
         dbPath: getDbPath(
           `stress-${config.env}-worker-${i}-${signerIdentifier}`,
         ),
