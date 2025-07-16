@@ -10,14 +10,15 @@ const { WALLET_KEY, ENCRYPTION_KEY,XMTP_ENV } = validateEnvironment([
   "XMTP_ENV"
 ]);
 
+let messageCount = 0;
 
 let client: Client;
 
 
 const sendPool = new Piscina({
   filename: resolve(process.cwd(), 'dist/src/worker.js'),
-  maxThreads: 200,
-  minThreads: 200,
+  maxThreads: 100,
+  minThreads: 100,
 });
 
 
@@ -43,15 +44,19 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
+  messageCount++;
   sendPool.run({
     conversationId: message.conversationId,
-    message: `GM! Thanks for your message: "${message.content as string}"`,
+    message: message.content,
+    workerId: messageCount,
     env: {
       WALLET_KEY,
       ENCRYPTION_KEY,
       XMTP_ENV
-    } 
-  })
+    }     
+  }).catch((error) => {
+    console.error(`Worker ${messageCount} error:`, error);
+  });
 };
 
 

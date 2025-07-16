@@ -1,7 +1,5 @@
 
 
-
-
 interface SendTask {
   conversationId: string;
   message: string;
@@ -12,7 +10,6 @@ interface SendTask {
     XMTP_ENV: string;
   };
 }
-
 
 
 export default async function sendMessage({ message, conversationId, workerId, env }: SendTask) {
