@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { Client, type XmtpEnv } from "@xmtp/node-sdk";
-import { createSigner, getEncryptionKeyFromHex, logAgentDetails, validateEnvironment } from "../helpers/client";
+import { Client, type LogLevel, type XmtpEnv } from "@xmtp/node-sdk";
+import { createSigner, getDbPath, getEncryptionKeyFromHex, logAgentDetails, validateEnvironment } from "../helpers/client";
   
 const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
   "WALLET_KEY",
@@ -14,10 +14,12 @@ const env: XmtpEnv = process.env.XMTP_ENV as XmtpEnv;
 async function main() {
   const client = await Client.create(signer, {
     dbEncryptionKey,
+    loggingLevel: "debug" as LogLevel,  
+    dbPath: getDbPath("gm-bot-"+env),
     env,
   });
   await client.conversations.sync();
-  console.log("Synced")
+  logAgentDetails(client)
   const stream = await client.conversations.streamAllMessages();
   let messageCount = 1;
   for await (const message of stream) {
@@ -29,15 +31,7 @@ async function main() {
     }
     console.log(messageCount, message.content as string)
     messageCount++;
-    const conversation = await client.conversations.getConversationById(
-      message.conversationId
-    );
-  
-    if (!conversation) {
-      console.log("Unable to find conversation, skipping");
-      return;
-    }
-     await conversation.send("gm: "+message.content)
+
   }
 }
 
