@@ -18,7 +18,7 @@ const RETRY_INTERVAL = 5000;
 
 let retries = MAX_RETRIES;
 let client: Client;
-let messageCount = 0;
+let messageCount = 1;
 let currentStream: any = null;
 
 const retry = () => {
@@ -46,22 +46,16 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     console.log("Error", err);
     return;
   }
-
   if (!message) {
     console.log("No message received");
     return;
   }
-
-
   if (
     message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
     message?.contentType?.typeId !== "text"
   ) {
     return;
   }
-
-
-
   const conversation = await client.conversations.getConversationById(
     message.conversationId
   );
@@ -70,14 +64,11 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     console.log("Unable to find conversation, skipping");
     return;
   }
-  await conversation.send("gm: "+message.content)
+   conversation.send("gm: "+message.content)
   messageCount++;
   
-  console.log(
-    `[Processed: ${messageCount}/${messageCount}] Processing message: ${message.content as string} by ${
-      message.senderInboxId
-    }`
-  );
+  console.log(messageCount+"_",message.content as string)
+
   
   // Reset retry count on successful message processing
   retries = MAX_RETRIES;

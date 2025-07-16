@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { Client, type XmtpEnv } from "@xmtp/node-sdk";
 import { createSigner, getEncryptionKeyFromHex, validateEnvironment } from "../helpers/client";
-
+  
 const { WALLET_KEY, ENCRYPTION_KEY } = validateEnvironment([
   "WALLET_KEY",
   "ENCRYPTION_KEY",
@@ -16,10 +16,11 @@ async function main() {
     dbEncryptionKey,
     env,
   });
-
+  const signerIdentifier = (await signer.getIdentifier()).identifier; 
+      console.log(`Started on ${signerIdentifier}`)
   await client.conversations.sync();
   const stream = await client.conversations.streamAllMessages();
-
+  let messageCount = 1;
   for await (const message of stream) {
     if (
       message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
@@ -27,7 +28,17 @@ async function main() {
     ) {
       continue;
     }
-
+    console.log(messageCount, message.content as string)
+    messageCount++;
+    const conversation = await client.conversations.getConversationById(
+      message.conversationId
+    );
+  
+    if (!conversation) {
+      console.log("Unable to find conversation, skipping");
+      return;
+    }
+     await conversation.send("gm: "+message.content)
   }
 }
 
