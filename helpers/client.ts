@@ -1,7 +1,7 @@
 import { getRandomValues } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { IdentifierKind, type Client, type Signer } from "@xmtp/node-sdk";
+import { IdentifierKind,  Client,  Signer } from "@xmtp/node-sdk";
 import { fromString, toString } from "uint8arrays";
 import { createWalletClient, http, toBytes } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
@@ -116,6 +116,7 @@ export const logAgentDetails = async (
     console.log(`
     ✓ XMTP Client:
     • InboxId: ${inboxId}
+    • Version: ${Client.version}
     • Address: ${address}
     • Conversations: ${conversations.length}
     • Installations: ${inboxState.installations.length}

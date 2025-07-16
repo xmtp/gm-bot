@@ -52,8 +52,6 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
-  messageCount++;
-  console.log(`[Total: ${messageCount}] Received raw message from ${message.senderInboxId}`);
 
   if (
     message?.senderInboxId.toLowerCase() === client.inboxId.toLowerCase() ||
@@ -62,13 +60,7 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     return;
   }
 
-  messageCount++;
-  
-  console.log(
-    `[Processed: ${messageCount}/${messageCount}] Processing message: ${message.content as string} by ${
-      message.senderInboxId
-    }`
-  );
+
 
   const conversation = await client.conversations.getConversationById(
     message.conversationId
@@ -78,10 +70,14 @@ const onMessage = async (err: Error | null, message?: DecodedMessage) => {
     console.log("Unable to find conversation, skipping");
     return;
   }
-
-  conversation.send("gm: "+message.content).then(() => {
-    console.log(`Replied to message: ${message.content as string}`);
- }).catch(console.error);
+  await conversation.send("gm: "+message.content)
+  messageCount++;
+  
+  console.log(
+    `[Processed: ${messageCount}/${messageCount}] Processing message: ${message.content as string} by ${
+      message.senderInboxId
+    }`
+  );
   
   // Reset retry count on successful message processing
   retries = MAX_RETRIES;
@@ -120,6 +116,7 @@ async function main() {
     env,
     dbPath: getDbPath(env + "-" + signerIdentifier),  
     loggingLevel: process.env.LOGGING_LEVEL as any,
+    disableDeviceSync: true,
   });
   logAgentDetails(client);
 
