@@ -65,9 +65,8 @@ function parseArgs(): Config {
       config.tresshold = parseInt(nextArg, 10);
       i++;
     }
-    if (arg === "--keep-db" && nextArg) {
-      config.keepDb = nextArg === "true";
-      i++;
+    if (arg === "--keep-db") {
+      config.keepDb = true;
     }
   }
 
