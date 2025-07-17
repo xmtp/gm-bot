@@ -22,6 +22,7 @@ async function main() {
     loggingLevel: LOGGING_LEVEL as LogLevel,
     dbPath: getDbPath("gm-bot-"+env),
   });
+  let messageCount = 0;
   void logAgentDetails(client);
   console.log("Syncing conversations...");
   await client.conversations.sync();
@@ -44,8 +45,9 @@ async function main() {
         return;
       }
       await conversation.send("gm: " + message.content);
-      console.log(`Replied to: ${message.content}`);
-    
+      console.log(`${messageCount++} : ${message.content}`);
+     
+     
   }
   client.conversations.streamAllMessages(onMessage);
 }
