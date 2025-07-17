@@ -1,12 +1,13 @@
 import "dotenv/config";
 import { Client, DecodedMessage, LogLevel, type XmtpEnv } from "@xmtp/node-sdk";
-import { createSigner, getDbPath, getEncryptionKeyFromHex } from "../helpers/client";
+import { createSigner, getDbPath, getEncryptionKeyFromHex, logAgentDetails, validateEnvironment } from "../helpers/client";
 
-const { WALLET_KEY, ENCRYPTION_KEY, XMTP_ENV } = process.env;
-
-if (!WALLET_KEY || !ENCRYPTION_KEY) {
-  throw new Error("WALLET_KEY and ENCRYPTION_KEY must be set");
-}
+const { WALLET_KEY, ENCRYPTION_KEY, XMTP_ENV ,LOGGING_LEVEL } = validateEnvironment([
+  "WALLET_KEY",
+  "ENCRYPTION_KEY",
+  "XMTP_ENV",
+  "LOGGING_LEVEL",
+]);
 
 const signer = createSigner(WALLET_KEY as `0x${string}`);
 const dbEncryptionKey = getEncryptionKeyFromHex(ENCRYPTION_KEY);
@@ -18,28 +19,17 @@ async function main() {
   const client = await Client.create(signer, {
     dbEncryptionKey,
     env,
-    loggingLevel: "debug" as LogLevel,
+    loggingLevel: LOGGING_LEVEL as LogLevel,
     dbPath: getDbPath("gm-bot-"+env),
   });
-
+  void logAgentDetails(client);
   console.log("Syncing conversations...");
   await client.conversations.sync();
 
-  const identifier = await signer.getIdentifier();
-  console.log(`Agent initialized on ${identifier.identifier}`);
-
   console.log("Waiting for messages...");
   const onMessage = async (err: Error | null | undefined, message?: DecodedMessage) => {
-    if (err) {
+    if (err || !message) {
       console.error("Message stream error:", err);
-      return;
-    }
-
-    if (!message) {
-      return;
-    }
-
-    if(message.contentType?.typeId !== "text") {
       return;
     }
 
