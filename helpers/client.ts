@@ -116,7 +116,7 @@ export const logAgentDetails = async (
     console.log(`
     ✓ XMTP Client:
     • InboxId: ${inboxId}
-    • Version: ${Client.version}
+    • Bindings: ${Client.version}
     • Address: ${address}
     • Conversations: ${conversations.length}
     • Installations: ${inboxState.installations.length}
