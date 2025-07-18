@@ -8,16 +8,22 @@ import {
 import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
-import { generatePrivateKey } from "viem/accounts";
 import {
   createSigner,
   generateEncryptionKeyHex,
   getDbPath,
   getEncryptionKeyFromHex,
+  validateEnvironment,
 } from "../helpers/client";
+import { generatePrivateKey } from "viem/accounts";
 
 // yarn stress --address 0x362d666308d90e049404d361b29c41bda42dd38b --users 5
 // yarn stress --address 0x362d666308d90e049404d361b29c41bda42dd38b --users 5 --env production
+const {  XMTP_ENV, ADDRESS } =
+validateEnvironment([
+  "XMTP_ENV",
+  "ADDRESS",
+]);
 
 interface Config {
   userCount: number;
@@ -26,7 +32,6 @@ interface Config {
   address: string;
   tresshold: number;
   keepDb: boolean;
-  loggingLevel: LogLevel;
 }
 
 function parseArgs(): Config {
@@ -34,11 +39,10 @@ function parseArgs(): Config {
   const config: Config = {
     userCount: 5,
     timeout: 30 * 1000, // 120 seconds - increased for XMTP operations
-    env: process.env.XMTP_ENV ?? "local",
-    address: process.env.ADDRESS ?? "",
+    env: XMTP_ENV,
+    address:ADDRESS,
     tresshold: 95,
     keepDb: false,
-    loggingLevel: process.env.LOGGING_LEVEL as LogLevel,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -127,9 +131,10 @@ async function runStressTest(config: Config): Promise<void> {
 
       const client = await Client.create(signer, {
         env: config.env as XmtpEnv,
-        dbPath: getDbPath(`stress-${config.env}-${i}-${signerIdentifier}`),
+        dbPath: getDbPath(
+          `stress-${config.env}-${i}-${signerIdentifier}`,
+        ),
         dbEncryptionKey,
-        loggingLevel: config.loggingLevel,
       });
 
       console.log(`✅ ${i} initialized successfully`);
@@ -142,7 +147,7 @@ async function runStressTest(config: Config): Promise<void> {
 
   // Run all workers in parallel
   console.log(`🔄 Starting parallel execution...`);
-
+  
   // Shared counters
   let totalMessagesSent = 0;
   let completedWorkers = 0;
@@ -192,27 +197,21 @@ async function runStressTest(config: Config): Promise<void> {
                 // 3. Calculate response time
                 const responseTime = Date.now() - sendCompleteTime;
 
-                const result = {
-                  success: true,
-                  newDmTime,
-                  sendTime,
-                  responseTime,
-                };
+                const result = { success: true, newDmTime, sendTime, responseTime };
                 results.push(result);
                 completedWorkers++;
-
-                const successRate =
-                  (results.filter((r) => r.success).length / config.userCount) *
-                  100;
+                
+                const successRate = (results.filter(r => r.success).length / config.userCount) * 100;
                 console.log(
                   `✅ ${i}: NewDM=${newDmTime}ms, Send=${sendTime}ms, Response=${responseTime}ms (${completedWorkers}/${config.userCount}, ${successRate.toFixed(1)}% success)`,
                 );
-
+                
+             
                 resolve(result);
               }
             },
           );
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 1000));
 
           console.log(`📤 ${i}: Sending test message...`);
           // 2. Time message send
@@ -221,26 +220,17 @@ async function runStressTest(config: Config): Promise<void> {
           totalMessagesSent++;
           sendTime = Date.now() - sendStart;
           sendCompleteTime = Date.now();
-          console.log(
-            `📩 ${i}: Message sent in ${sendTime}ms (Total sent: ${totalMessagesSent})`,
-          );
+          console.log(`📩 ${i}: Message sent in ${sendTime}ms (Total sent: ${totalMessagesSent})`);
         } catch (error) {
           console.error(error);
         }
       };
 
       process().catch(() => {
-        const result = {
-          success: false,
-          newDmTime: 0,
-          sendTime: 0,
-          responseTime: 0,
-        };
+        const result = { success: false, newDmTime: 0, sendTime: 0, responseTime: 0 };
         results.push(result);
         completedWorkers++;
-        console.log(
-          `❌ ${i}: Failed (${completedWorkers}/${config.userCount})`,
-        );
+        console.log(`❌ ${i}: Failed (${completedWorkers}/${config.userCount})`);
         resolve(result);
       });
     });
@@ -248,13 +238,13 @@ async function runStressTest(config: Config): Promise<void> {
 
   // Wait for all workers to complete
   console.log(`⏳ Waiting for all workers to complete...`);
-
+  
   const finalResults = await Promise.all(promises);
   const successful = finalResults.filter((r) => r.success);
   const successRate = (successful.length / config.userCount) * 100;
   const failed = config.userCount - successful.length;
   const duration = Date.now() - startTime;
-
+  
   console.log(`\n📊 Summary:`);
   console.log(`   Successful: ${successful.length}`);
   console.log(`   Failed: ${failed}`);
@@ -263,13 +253,9 @@ async function runStressTest(config: Config): Promise<void> {
   console.log(`   Total: ${totalMessagesSent}`);
 
   if (successful.length > 0) {
-    const avgNewDm =
-      successful.reduce((sum, r) => sum + r.newDmTime, 0) / successful.length;
-    const avgSend =
-      successful.reduce((sum, r) => sum + r.sendTime, 0) / successful.length;
-    const avgResponse =
-      successful.reduce((sum, r) => sum + r.responseTime, 0) /
-      successful.length;
+    const avgNewDm = successful.reduce((sum, r) => sum + r.newDmTime, 0) / successful.length;
+    const avgSend = successful.reduce((sum, r) => sum + r.sendTime, 0) / successful.length;
+    const avgResponse = successful.reduce((sum, r) => sum + r.responseTime, 0) / successful.length;
 
     console.log(`   Avg NewDM: ${Math.round(avgNewDm)}ms`);
     console.log(`   Avg Send: ${Math.round(avgSend)}ms`);
@@ -284,4 +270,4 @@ async function main(): Promise<void> {
   await runStressTest(config);
 }
 
-void main();
+main();
