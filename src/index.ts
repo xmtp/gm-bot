@@ -34,7 +34,12 @@ async function main() {
       return;
     }
 
+    // Skip if the message is from the bot
     if(message.senderInboxId.toLowerCase() === client.inboxId.toLowerCase()) {
+      return;
+    }
+    // Skip if the message is not a text message
+    if (message.contentType?.typeId !== "text") {
       return;
     }
 
