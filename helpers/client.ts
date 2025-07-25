@@ -112,7 +112,22 @@ export const logAgentDetails = async (
 
     const conversations = await firstClient.conversations.list();
     const inboxState = await firstClient.preferences.inboxState();
+    const keyPackageStatuses =
+      await firstClient.getKeyPackageStatusesForInstallationIds([
+        installationId,
+      ]);
 
+    let createdDate = new Date();
+    let expiryDate = new Date();
+
+    // Extract key package status for the specific installation
+    const keyPackageStatus = keyPackageStatuses[installationId];
+    if (keyPackageStatus.lifetime) {
+      createdDate = new Date(
+        Number(keyPackageStatus.lifetime.notBefore) * 1000,
+      );
+      expiryDate = new Date(Number(keyPackageStatus.lifetime.notAfter) * 1000);
+    }
     console.log(`
     ✓ XMTP Client:
     • InboxId: ${inboxId}
@@ -121,6 +136,8 @@ export const logAgentDetails = async (
     • Conversations: ${conversations.length}
     • Installations: ${inboxState.installations.length}
     • InstallationId: ${installationId}
+    • Key Package created: ${createdDate.toLocaleString()}
+    • Key Package valid until: ${expiryDate.toLocaleString()}
     • Networks: ${environments}
     ${urls.map((url) => `• URL: ${url}`).join("\n")}`);
   }
