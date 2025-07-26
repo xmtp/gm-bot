@@ -49,7 +49,7 @@ async function main() {
         console.log(`Conversation not found: ${message.conversationId}`);
         return;
       }
-      //void conversation.send("gm: " + message.content);
+      void conversation.send("gm: " + message.content);
       console.log(`${messageCount++} : ${message.content}`);
      
      
