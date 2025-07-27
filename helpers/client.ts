@@ -6,6 +6,7 @@ import { fromString, toString } from "uint8arrays";
 import { createWalletClient, http, toBytes } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { sepolia } from "viem/chains";
+import { createRequire } from "node:module";
 
 interface User {
   key: `0x${string}`;
@@ -78,6 +79,7 @@ export const getDbPath = (description: string = "xmtp") => {
 
 
 
+
 export const logAgentDetails = async (
   clients: Client | Client[],
 ): Promise<void> => {
@@ -91,6 +93,17 @@ export const logAgentDetails = async (
     },
     {},
   );
+  // Get XMTP SDK version from package.json
+  const require = createRequire(import.meta.url);
+  const packageJson = require("../package.json") as {
+    dependencies: Record<string, string>;
+  };
+  const xmtpSdkVersion = packageJson.dependencies["@xmtp/node-sdk"];
+  const bindingVersion = (
+    require("../node_modules/@xmtp/node-bindings/package.json") as {
+      version: string;
+    }
+  ).version;
 
   for (const [address, clientGroup] of Object.entries(clientsByAddress)) {
     const firstClient = clientGroup[0];
@@ -131,7 +144,9 @@ export const logAgentDetails = async (
     console.log(`
     ✓ XMTP Client:
     • InboxId: ${inboxId}
-    • Bindings: ${Client.version}
+    • SDK: ${xmtpSdkVersion}
+    • Bindings: ${bindingVersion}
+    • Version: ${Client.version}
     • Address: ${address}
     • Conversations: ${conversations.length}
     • Installations: ${inboxState.installations.length}
@@ -142,6 +157,7 @@ export const logAgentDetails = async (
     ${urls.map((url) => `• URL: ${url}`).join("\n")}`);
   }
 };
+
 export function validateEnvironment(vars: string[]): Record<string, string> {
   const missing = vars.filter((v) => !process.env[v]);
 
