@@ -28,11 +28,9 @@ async function main() {
   await client.conversations.sync();
 
   console.log("Waiting for messages...");
-  const onMessage = async (err: Error | null | undefined, message?: DecodedMessage) => {
-    if (err || !message) {
-      console.error("Message stream error:", err);
-      return;
-    }
+  const onValue = async (message: DecodedMessage) => {
+    
+    
 
     // Skip if the message is from the bot
     if(message.senderInboxId.toLowerCase() === client.inboxId.toLowerCase()) {
@@ -54,7 +52,7 @@ async function main() {
      
      
   }
-  client.conversations.streamAllMessages(onMessage);
+  client.conversations.streamAllMessages({onValue});
 }
 
 main().catch(console.error);
