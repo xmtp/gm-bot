@@ -25,9 +25,13 @@ async function main() {
   let messageCount = 1;
   void logAgentDetails(client);
   console.log("Syncing conversations...");
-  await client.conversations.sync();
-  console.log("Waiting for messages...");
+  console.time("syncAll");
+  await client.conversations.syncAll();
+  console.timeEnd("syncAll");
+  console.time("streamAllMessages");
   const stream = await client.conversations.streamAllMessages();
+  console.timeEnd("streamAllMessages");
+  console.log("Waiting for messages...");
   for await (const message of stream) {
     // Skip if the message is from the bot
     if(message.senderInboxId.toLowerCase() === client.inboxId.toLowerCase()) {
