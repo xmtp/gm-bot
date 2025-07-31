@@ -29,14 +29,7 @@ async function main() {
   console.log("Waiting for messages...");
   const stream = await client.conversations.streamAllMessages();
   for await (const message of stream) {
-    // Skip if the message is from the bot
-    if(message.senderInboxId.toLowerCase() === client.inboxId.toLowerCase()) {
-      continue;
-    }
-    // Skip if the message is not a text message
-    if (message.contentType?.typeId !== "text") {
-      continue;
-    }
+    
 
     console.log(`Received: ${message.content} from ${message.senderInboxId}`);
     const conversation = await client.conversations.getConversationById(message.conversationId)
