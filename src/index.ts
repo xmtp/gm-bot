@@ -20,6 +20,7 @@ async function main() {
     dbEncryptionKey,
     env,
     loggingLevel: LOGGING_LEVEL as LogLevel,
+    appVersion:'gm-bot/1.0.0',
     dbPath: getDbPath("gm-bot-"+env),
   });
   let messageCount = 1;
