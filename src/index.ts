@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Agent, getTestUrl,  } from "@xmtp/agent-sdk";
+import { Agent, getTestUrl, type LogLevel  } from "@xmtp/agent-sdk";
 import fs from "fs";
 
 process.loadEnvFile(".env");
@@ -7,6 +7,7 @@ process.loadEnvFile(".env");
   // 2. Spin up the agent
 const agent = await Agent.createFromEnv({
   appVersion:'gm-bot/1.0.0',
+  loggingLevel: "warn" as LogLevel,
   dbPath: getDbPath("gm-bot-"+process.env.XMTP_ENV),
 });
 
