@@ -13,6 +13,11 @@ const agent = await Agent.createFromEnv({
   dbPath: getDbPath("gm-bot-"+process.env.XMTP_ENV),
 });
 
+// Handle uncaught errors
+agent.on("unhandledError", (error) => {
+  console.error("Agent error", error);
+});
+
 agent.on("text", async (ctx) => {
   await ctx.conversation.send("gm: " + ctx.message.content);
 });
