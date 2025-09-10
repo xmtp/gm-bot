@@ -1,10 +1,11 @@
 import "dotenv/config";
-import { Agent, createSigner, createUser, getTestUrl } from "@xmtp/agent-sdk";
+import { Agent, createSigner, createUser, getEncryptionKeyFromHex, getTestUrl,  } from "@xmtp/agent-sdk";
 import fs from "fs";
 
-// 2. Spin up the agent
-const agent = await Agent.create(createSigner(createUser()), {
-  env: process.env.XMTP_ENV as "local" | "dev" | "production", // or 'production'
+process.loadEnvFile(".env");
+
+  // 2. Spin up the agent
+const agent = await Agent.createFromEnv({
   appVersion:'gm-bot/1.0.0',
   dbPath: getDbPath("gm-bot-"+process.env.XMTP_ENV),
 });
