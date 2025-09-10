@@ -2,7 +2,10 @@
 import { Agent, getTestUrl, type LogLevel  } from "@xmtp/agent-sdk";
 import fs from "fs";
 
-process.loadEnvFile(".env");
+// Load .env file only in local development
+if (process.env.NODE_ENV !== 'production') {
+  process.loadEnvFile(".env");
+}
 
   // 2. Spin up the agent
 const agent = await Agent.createFromEnv({
