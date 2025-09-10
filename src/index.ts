@@ -1,4 +1,4 @@
-import "dotenv/config";
+
 import { Agent, getTestUrl, type LogLevel  } from "@xmtp/agent-sdk";
 import fs from "fs";
 
