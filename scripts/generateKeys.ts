@@ -1,7 +1,19 @@
+import { getRandomValues } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { toString } from "uint8arrays";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { generateEncryptionKeyHex } from "../helpers/client";
+
+/**
+ * Generate a random encryption key
+ * @returns The encryption key
+ */
+export const generateEncryptionKeyHex = () => {
+  /* Generate a random encryption key */
+  const uint8Array = getRandomValues(new Uint8Array(32));
+  /* Convert the encryption key to a hex string */
+  return toString(uint8Array, "hex");
+};
 
 // Check Node.js version
 const nodeVersion = process.versions.node;
@@ -11,18 +23,19 @@ if (major < 20) {
   process.exit(1);
 }
 
-console.log("Generating keys for gm-bot...");
+console.log("Generating keys for example...");
 
 const walletKey = generatePrivateKey();
 const account = privateKeyToAccount(walletKey);
 const encryptionKeyHex = generateEncryptionKeyHex();
 const publicKey = account.address;
 
-// Get the current working directory
-const currentDir = process.cwd();
-const filePath = join(currentDir, ".env");
+// Get the current working directory (should be the example directory)
+const exampleDir = process.cwd();
+const exampleName = exampleDir.split("/").pop() || "example";
+const filePath = join(exampleDir, ".env");
 
-console.log(`Creating .env file in: ${currentDir}`);
+console.log(`Creating .env file in: ${exampleDir}`);
 
 // Read existing .env file if it exists
 let existingEnv = "";
@@ -37,13 +50,13 @@ try {
 // Check if XMTP_ENV is already set
 const xmtpEnvExists = existingEnv.includes("XMTP_ENV=");
 
-const envContent = `# XMTP keys for multiply-agent
-WALLET_KEY=${walletKey}
-ENCRYPTION_KEY=${encryptionKeyHex}
+const envContent = `# keys for ${exampleName}
+XMTP_WALLET_KEY=${walletKey}
+XMTP_DB_ENCRYPTION_KEY=${encryptionKeyHex}
 ${!xmtpEnvExists ? "XMTP_ENV=dev\n" : ""}# public key is ${publicKey}
 `;
 
-// Write the .env file
+// Write the .env file to the example directory
 await writeFile(filePath, envContent, { flag: "a" });
 console.log(`Keys written to ${filePath}`);
 console.log(`Public key: ${publicKey}`);

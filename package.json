@@ -7,20 +7,14 @@
     "start": "tsx src/index.ts",
     "dev": "tsx --watch src/index.ts",
     "revoke": "tsx scripts/revokeInstallations.ts",
-    "send": "tsx scripts/send.ts",
-    "gen:keys": "tsx scripts/generateKeys.ts",
-    "packages": "tsx scripts/packages.ts"
+    "gen:keys": "tsx scripts/generateKeys.ts"
   },
   "dependencies": {
-    "@xmtp/node-sdk": "4.1.0",
-    "piscina": "^5.1.3",
-    "uint8arrays": "^5.1.0",
-    "viem": "^2.22.17"
+    "@xmtp/agent-sdk": "^0.0.9"
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
     "concurrently": "^9.2.0",
-    "dotenv": "^16.4.5",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   },
