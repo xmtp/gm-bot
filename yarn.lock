@@ -433,7 +433,7 @@
   resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.4.0.tgz#aee7da306cf5edf2dbd5bbb81b5a9d1f121e2e75"
   integrity sha512-NfpbDc0gdhDY+5x1gxlv3I/5EtGLuwfkQszy08HXQHCchFrdpyA3NcnM9C2OQK7992H7f+bGEUlzaRze6Iqrbw==
 
-"@xmtp/node-sdk@4.1.0", "@xmtp/node-sdk@^4.1.0":
+"@xmtp/node-sdk@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.1.0.tgz#5a4c987255e973d448820dcba3c99b590ef49485"
   integrity sha512-tDXrwVnxUzyrjlmFE9FuBpR2j8OtE4hrDMLdBpEvoTjMHvWiPyzaxHoE8FZLOaSoW/zwncGHLH0VE59j7PQx+g==
