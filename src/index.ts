@@ -13,7 +13,7 @@ const agent = await Agent.createFromEnv({
   dbPath: getDbPath("gm-bot-"+process.env.XMTP_ENV),
 });
 
-agent.on("text", async (ctx : any) => {
+agent.on("text", async (ctx) => {
   await ctx.conversation.send("gm: " + ctx.message.content);
 });
 
