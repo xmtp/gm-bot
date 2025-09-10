@@ -3,9 +3,8 @@ import { Agent, getTestUrl, type LogLevel  } from "@xmtp/agent-sdk";
 import fs from "fs";
 
 // Load .env file only in local development
-if (process.env.NODE_ENV !== 'production') {
-  process.loadEnvFile(".env");
-}
+if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
+
 
   // 2. Spin up the agent
 const agent = await Agent.createFromEnv({
@@ -14,11 +13,8 @@ const agent = await Agent.createFromEnv({
   dbPath: getDbPath("gm-bot-"+process.env.XMTP_ENV),
 });
 
-let count = 0;
-
 agent.on("text", async (ctx : any) => {
   await ctx.conversation.send("gm: " + ctx.message.content);
-  count++;
 });
 
 // 4. Log when we're ready
