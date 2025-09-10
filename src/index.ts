@@ -1,7 +1,6 @@
 import "dotenv/config";
-
-import { getDbPath } from "../helpers/client";
 import { Agent, createSigner, createUser, getTestUrl } from "@xmtp/agent-sdk";
+import fs from "fs";
 
 // 2. Spin up the agent
 const agent = await Agent.create(createSigner(createUser()), {
@@ -24,3 +23,13 @@ agent.on("start", () => {
 
 await agent.start();
 
+
+function getDbPath(description: string = "xmtp") {
+  //Checks if the environment is a Railway deployment
+  const volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp";
+  // Create database directory if it doesn't exist
+  if (!fs.existsSync(volumePath)) {
+    fs.mkdirSync(volumePath, { recursive: true });
+  }
+  return `${volumePath}/${process.env.XMTP_ENV}-${description}.db3`;
+}

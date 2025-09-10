@@ -249,6 +249,13 @@
   resolved "https://registry.yarnpkg.com/@noble/ciphers/-/ciphers-1.3.0.tgz#f64b8ff886c240e644e5573c097f86e5b43676dc"
   integrity sha512-2I0gnIVPtfnMw9ee9h1dJG7tp81+8Ob3OJb3Mv37rx5L40/b0i7djjCVvGOVqc9AEIQyvyu1i6ypKdFw8R8gQw==
 
+"@noble/curves@1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.9.1.tgz#9654a0bc6c13420ae252ddcf975eaf0f58f0a35c"
+  integrity sha512-k11yZxZg+t+gWvBbIswW0yoJlu8cHOC7dhunwOzoWH/mXGBiYyR4YY6hAEK/3EUs4UpB8la1RfdRpeGsFHkWsA==
+  dependencies:
+    "@noble/hashes" "1.8.0"
+
 "@noble/curves@1.9.2":
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.9.2.tgz#73388356ce733922396214a933ff7c95afcef911"
@@ -267,6 +274,11 @@
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.8.0.tgz#cee43d801fcef9644b11b8194857695acd5f815a"
   integrity sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==
+
+"@noble/secp256k1@^2.2.3":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-2.3.0.tgz#ddfe6e853472fb88cba4d5e59b7067adc1e64adf"
+  integrity sha512-0TQed2gcBbIrh7Ccyw+y/uZQvbJwm7Ao4scBUxqpBCcsOlZG0O4KGfjtNAy/li4W8n1xt3dxrwJ0beZ2h2G6Kw==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -357,6 +369,19 @@
   dependencies:
     undici-types "~6.21.0"
 
+"@xmtp/agent-sdk@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-0.0.9.tgz#5b5e4b36d3b176e1d2e7c2bed801e2040c0c3733"
+  integrity sha512-GXJuPjqsCWFr7HNc+1ZAyda0Y/4aWOD3Kt8RDpaHwRjyhWLBr0EvOMW0mEFIEy2GPLiwVZIxGpLzrT8XgxFaTg==
+  dependencies:
+    "@xmtp/content-type-reaction" "^2.0.2"
+    "@xmtp/content-type-remote-attachment" "^2.0.2"
+    "@xmtp/content-type-reply" "^2.0.2"
+    "@xmtp/content-type-text" "^2.0.2"
+    "@xmtp/node-sdk" "^4.1.0"
+    uint8arrays "^5.1.0"
+    viem "^2.31.7"
+
 "@xmtp/content-type-group-updated@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@xmtp/content-type-group-updated/-/content-type-group-updated-2.0.2.tgz#b664fd096a14245c3164bd35a5db77240de6c7d4"
@@ -372,6 +397,30 @@
   dependencies:
     "@xmtp/proto" "^3.78.0"
 
+"@xmtp/content-type-reaction@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@xmtp/content-type-reaction/-/content-type-reaction-2.0.2.tgz#b0dfd0e201275cf2531bbc44300386685355dbb8"
+  integrity sha512-v7wGMycSsUi8NyLR+ytjDhNY4Nr4p8qNwKx8LZPlA8IwLacq2Bp2vKxlOAnGX7m5XP9ivpBNNZvkpR5Limvz1g==
+  dependencies:
+    "@xmtp/content-type-primitives" "^2.0.2"
+
+"@xmtp/content-type-remote-attachment@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@xmtp/content-type-remote-attachment/-/content-type-remote-attachment-2.0.2.tgz#be701082e4a6af363707d2cb69b8ab21c6f149bb"
+  integrity sha512-gV2yU6UWsLQcJ228B7jOvtzUyK/+TfG0EUevxbz3OUuWpVpoo110qAa3HWUlahL1fWuaoFSX9GmESyw2UJWAQw==
+  dependencies:
+    "@noble/secp256k1" "^2.2.3"
+    "@xmtp/content-type-primitives" "^2.0.2"
+    "@xmtp/proto" "^3.78.0"
+
+"@xmtp/content-type-reply@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@xmtp/content-type-reply/-/content-type-reply-2.0.2.tgz#ba37e31b4be031525031fa7389933728a239faf7"
+  integrity sha512-tks5WEevzOzUTmpvpJjxLH5jil3cHSddWgS5MPfm8bGU5hCUfy8uojlVaFEUbBBjpDVwU1o++SW5h5HggHKsgg==
+  dependencies:
+    "@xmtp/content-type-primitives" "^2.0.2"
+    "@xmtp/proto" "^3.78.0"
+
 "@xmtp/content-type-text@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@xmtp/content-type-text/-/content-type-text-2.0.2.tgz#dbfde0e5840cd178a18b7ca618b10813e4175820"
@@ -384,7 +433,7 @@
   resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.4.0.tgz#aee7da306cf5edf2dbd5bbb81b5a9d1f121e2e75"
   integrity sha512-NfpbDc0gdhDY+5x1gxlv3I/5EtGLuwfkQszy08HXQHCchFrdpyA3NcnM9C2OQK7992H7f+bGEUlzaRze6Iqrbw==
 
-"@xmtp/node-sdk@4.1.0":
+"@xmtp/node-sdk@4.1.0", "@xmtp/node-sdk@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.1.0.tgz#5a4c987255e973d448820dcba3c99b590ef49485"
   integrity sha512-tDXrwVnxUzyrjlmFE9FuBpR2j8OtE4hrDMLdBpEvoTjMHvWiPyzaxHoE8FZLOaSoW/zwncGHLH0VE59j7PQx+g==
@@ -408,6 +457,11 @@ abitype@1.0.8, abitype@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.0.8.tgz#3554f28b2e9d6e9f35eb59878193eabd1b9f46ba"
   integrity sha512-ZeiI6h3GnW06uYDLx0etQtX/p8E24UaHHBj57RSjK7YBFe7iuVn07EDpOeP451D06sF27VOz9JJPlIKJmXgkEg==
+
+abitype@1.1.0, abitype@^1.0.9:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.1.0.tgz#510c5b3f92901877977af5e864841f443bf55406"
+  integrity sha512-6Vh4HcRxNMLA0puzPjM5GBgT4aAcFGKZzSgAXvuZ27shJP6NEpielTuqbBmZILR5/xd0PizkBGy5hReKz9jl5A==
 
 ansi-regex@^5.0.1:
   version "5.0.1"
@@ -576,6 +630,20 @@ ox@0.8.1:
     abitype "^1.0.8"
     eventemitter3 "5.0.1"
 
+ox@0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/ox/-/ox-0.9.3.tgz#92cc1008dcd913e919364fd4175c860b3eeb18db"
+  integrity sha512-KzyJP+fPV4uhuuqrTZyok4DC7vFzi7HLUFiUNEmpbyh59htKWkOC98IONC1zgXJPbHAhQgqs6B0Z6StCGhmQvg==
+  dependencies:
+    "@adraffy/ens-normalize" "^1.11.0"
+    "@noble/ciphers" "^1.3.0"
+    "@noble/curves" "1.9.1"
+    "@noble/hashes" "^1.8.0"
+    "@scure/bip32" "^1.7.0"
+    "@scure/bip39" "^1.6.0"
+    abitype "^1.0.9"
+    eventemitter3 "5.0.1"
+
 piscina@^5.1.3:
   version "5.1.3"
   resolved "https://registry.yarnpkg.com/piscina/-/piscina-5.1.3.tgz#30a460500a08770fc97d622e63857a5978dfc466"
@@ -716,6 +784,20 @@ viem@^2.22.17:
     ox "0.8.1"
     ws "8.18.2"
 
+viem@^2.31.7:
+  version "2.37.5"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.37.5.tgz#3df9e75bc25eabcf09db6d4b4a423a1f53413a37"
+  integrity sha512-bLKvKgLcge6KWBMLk8iP9weu5tHNr0hkxPNwQd+YQrHEgek7ogTBBeE10T0V6blwBMYmeZFZHLnMhDmPjp63/A==
+  dependencies:
+    "@noble/curves" "1.9.1"
+    "@noble/hashes" "1.8.0"
+    "@scure/bip32" "1.7.0"
+    "@scure/bip39" "1.6.0"
+    abitype "1.1.0"
+    isows "1.0.7"
+    ox "0.9.3"
+    ws "8.18.3"
+
 wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
@@ -729,6 +811,11 @@ ws@8.18.2:
   version "8.18.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.2.tgz#42738b2be57ced85f46154320aabb51ab003705a"
   integrity sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==
+
+ws@8.18.3:
+  version "8.18.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.3.tgz#b56b88abffde62791c639170400c93dcb0c95472"
+  integrity sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==
 
 y18n@^5.0.5:
   version "5.0.8"
