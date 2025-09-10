@@ -17,7 +17,9 @@ The bot supports the following environment variables for high-volume processing:
 
 ```bash
 XMTP_ENV=dev                   # XMTP network (dev, production)
-LOGGING_LEVEL=info             # Logging verbosity
+XMTP_WALLET_KEY=               # Private key for wallet creation
+XMTP_DB_ENCRYPTION_KEY=        # Encryption key for database
+
 ```
 
 ## Run the agent
