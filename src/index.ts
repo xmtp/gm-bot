@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Agent, createSigner, createUser, getEncryptionKeyFromHex, getTestUrl,  } from "@xmtp/agent-sdk";
+import { Agent, getTestUrl,  } from "@xmtp/agent-sdk";
 import fs from "fs";
 
 process.loadEnvFile(".env");
