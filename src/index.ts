@@ -1,5 +1,5 @@
 
-import { Agent, getTestUrl, type LogLevel  } from "@xmtp/agent-sdk";
+import { Agent, createSigner, createUser, getTestUrl, LogLevel,   } from "@xmtp/agent-sdk";
 import fs from "fs";
 
 // Load .env file only in local development
@@ -7,23 +7,20 @@ if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
 
 
   // 2. Spin up the agent
-const agent = await Agent.createFromEnv({
+const agent = await Agent.create(createSigner(createUser(process.env.XMTP_WALLET_KEY as `0x${string}`)), {
   appVersion:'gm-bot/1.0.0',
-  loggingLevel: "warn" as LogLevel,
+    loggingLevel: "warn" as LogLevel,
+  env: process.env.XMTP_DB_ENCRYPTION_KEY as "local" | "dev" | "production",
   dbPath: getDbPath("gm-bot-"+process.env.XMTP_ENV),
 });
 
-// Handle uncaught errors
-agent.on("unhandledError", (error) => {
-  console.error("Agent error", error);
-});
-
-agent.on("text", async (ctx) => {
+agent.on("text",  async (ctx: any) => {
+  console.log(ctx.message);
   await ctx.conversation.send("gm: " + ctx.message.content);
 });
 
 // 4. Log when we're ready
-agent.on("start", () => {
+agent.on("start", (): void => {
   console.log(`Waiting for messages...`);
   console.log(`Address: ${agent.client.accountIdentifier?.identifier}`);
   console.log(`🔗${getTestUrl(agent)}`);

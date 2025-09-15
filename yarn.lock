@@ -253,10 +253,10 @@
   dependencies:
     undici-types "~7.8.0"
 
-"@xmtp/agent-sdk@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-0.0.11.tgz#8983e675689fd353cb8c33fad8a56b30a2110c7e"
-  integrity sha512-RqZAycAtifWfRGe2R0F9FnWfKgavwgEQciN0vpeCP8mbmnkzsXfqWcpKJnt8jqrN0Lx/AZf8KRnFNkKtFJ7eEw==
+"@xmtp/agent-sdk@latest":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-0.0.12.tgz#da4dfd9fe93d926892e69eb09d9421bf28789bab"
+  integrity sha512-MgQeil6+21vMVGvFPksyoTXxf37EcoFOX/2rbquraQ7MDFqf+YKfODQVykuuOYQngKI9iUk0S/D299gTCvKrbA==
   dependencies:
     "@xmtp/content-type-reaction" "^2.0.2"
     "@xmtp/content-type-remote-attachment" "^2.0.2"
