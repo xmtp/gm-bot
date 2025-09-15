@@ -10,7 +10,7 @@ const agent = await Agent.createFromEnv({
   appVersion:'gm-bot/1.0.0',
   env: process.env.XMTP_ENV as "local" | "dev" | "production",
   loggingLevel: "warn" as LogLevel,
-  dbPath: process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp/"+process.env.XMTP_ENV+ `-gm-bot-` + process.env.XMTP_ENV
+  dbPath: process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp/"+process.env.XMTP_ENV+ `-gm-bot-` + process.env.XMTP_ENV+".db3"
 });
 
 agent.on("text",  async (ctx: any) => {
