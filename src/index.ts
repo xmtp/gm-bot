@@ -1,5 +1,6 @@
 
 import { Agent, getTestUrl, LogLevel, XmtpEnv  } from "@xmtp/agent-sdk";
+import fs from "fs";
 
 // Load .env file only in local development
 if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
@@ -10,7 +11,7 @@ const agent = await Agent.createFromEnv({
   appVersion:'gm-bot/1.0.0',
   env: process.env.XMTP_ENV as XmtpEnv  ,
   loggingLevel: "warn" as LogLevel,
-  dbPath: process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp/"+process.env.XMTP_ENV+ `-gm-bot.db3`
+  dbPath: getDbPath()
 });
 
 agent.on("text",  async (ctx: any) => {
@@ -26,3 +27,15 @@ agent.on("start", (): void => {
 });
 
 await agent.start();
+
+
+
+export function getDbPath(description: string = "xmtp"): string {
+  // Checks if the environment is a Railway deployment
+  const volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp";
+  // Create database directory if it doesn't exist
+  if (!fs.existsSync(volumePath)) {
+    fs.mkdirSync(volumePath, { recursive: true });
+  }
+  return `${volumePath}/${process.env.XMTP_ENV}-${description}.db3`;
+}
