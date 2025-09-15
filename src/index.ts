@@ -15,7 +15,6 @@ const agent = await Agent.createFromEnv({
 });
 
 agent.on("text",  async (ctx: any) => {
-  console.log(ctx.message);
   await ctx.conversation.send("gm: " + ctx.message.content);
 });
 
