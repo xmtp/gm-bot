@@ -10,7 +10,7 @@
     "gen:keys": "tsx scripts/generateKeys.ts"
   },
   "dependencies": {
-    "@xmtp/agent-sdk": "^0.0.11"
+    "@xmtp/agent-sdk": "latest"
   },
   "devDependencies": {
     "tsx": "^4.19.3",
