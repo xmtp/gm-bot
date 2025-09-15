@@ -1,5 +1,5 @@
 
-import { Agent, getTestUrl, LogLevel,   } from "@xmtp/agent-sdk";
+import { Agent, getTestUrl, LogLevel, XmtpEnv  } from "@xmtp/agent-sdk";
 
 // Load .env file only in local development
 if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
   // 2. Spin up the agent
 const agent = await Agent.createFromEnv({
   appVersion:'gm-bot/1.0.0',
-  env: process.env.XMTP_ENV as "local" | "dev" | "production",
+  env: process.env.XMTP_ENV as XmtpEnv  ,
   loggingLevel: "warn" as LogLevel,
   dbPath: process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp/"+process.env.XMTP_ENV+ `-gm-bot.db3`
 });
