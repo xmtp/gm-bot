@@ -8,7 +8,6 @@ if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
 
   // 2. Spin up the agent
 const agent = await Agent.createFromEnv({
-  appVersion:'gm-bot/1.0.0',
   env: process.env.XMTP_ENV as XmtpEnv,
   dbPath: getDbPath()
 });
