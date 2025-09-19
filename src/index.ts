@@ -7,8 +7,7 @@ if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
 
 const agent = await Agent.createFromEnv({
   dbPath: (inboxId) =>{
-    const path=process.env.RAILWAY_VOLUME_MOUNT_PATH ??
-    "." + `/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`
+    const path=(process.env.RAILWAY_VOLUME_MOUNT_PATH ?? "." )+ `/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`
     console.log(path)
     return path
   }
