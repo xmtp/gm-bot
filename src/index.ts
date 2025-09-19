@@ -5,11 +5,13 @@ import { Agent, getTestUrl, logDetails  } from "@xmtp/agent-sdk";
 if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
 
 
-  // 2. Spin up the agent
 const agent = await Agent.createFromEnv({
-  dbPath: (inboxId) =>
-    process.env.RAILWAY_VOLUME_MOUNT_PATH ??
-    "." + `/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`,
+  dbPath: (inboxId) =>{
+    const path=process.env.RAILWAY_VOLUME_MOUNT_PATH ??
+    "." + `/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`
+    console.log(path)
+    return path
+  }
 });
 
 agent.on("text",  async (ctx: any) => {
