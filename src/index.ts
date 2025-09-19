@@ -9,7 +9,9 @@ if (process.env.NODE_ENV !== 'production') process.loadEnvFile(".env");
   // 2. Spin up the agent
 const agent = await Agent.createFromEnv({
   env: process.env.XMTP_ENV as XmtpEnv,
-  dbPath: getDbPath()
+  dbPath: (inboxId) =>
+    process.env.RAILWAY_VOLUME_MOUNT_PATH ??
+    "." + `/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`,
 });
 
 agent.on("text",  async (ctx: any) => {
@@ -26,13 +28,3 @@ agent.on("start", (): void => {
 await agent.start();
 
 
-
-export function getDbPath(description: string = "xmtp"): string {
-  // Checks if the environment is a Railway deployment
-  const volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data/xmtp";
-  // Create database directory if it doesn't exist
-  if (!fs.existsSync(volumePath)) {
-    fs.mkdirSync(volumePath, { recursive: true });
-  }
-  return `${volumePath}/${process.env.XMTP_ENV}-${description}.db3`;
-}
