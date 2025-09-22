@@ -253,16 +253,16 @@
   dependencies:
     undici-types "~7.8.0"
 
-"@xmtp/agent-sdk@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-0.0.14.tgz#c900e8e23987e4e0945cf4a7c8f69960f11b177f"
-  integrity sha512-oQ1BqmNnWpIYh0fZq7z0/hcBDx3GUSsimqR3enXq4XuXJxgf3SRP7ZTcfqtz6Wzx4gGpTYlQ4cdmBdser+m5gA==
+"@xmtp/agent-sdk@^0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-0.0.15.tgz#4ef1403c6192a7be7ea1b94fa0ad15459e22497b"
+  integrity sha512-4fNjnbycU++enTwY44u30nSLPsLe2XtdnJtA0Jih9BEH/pfw4STOhHV7SIhCvdQ1wdf6YSw1Ur5Fr8O/OzldDg==
   dependencies:
     "@xmtp/content-type-reaction" "^2.0.2"
     "@xmtp/content-type-remote-attachment" "^2.0.2"
     "@xmtp/content-type-reply" "^2.0.2"
     "@xmtp/content-type-text" "^2.0.2"
-    "@xmtp/node-sdk" "^4.1.1"
+    "@xmtp/node-sdk" "^4.1.2"
     uint8arrays "^5.1.0"
     viem "^2.37.6"
 
@@ -317,10 +317,10 @@
   resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.4.0.tgz#aee7da306cf5edf2dbd5bbb81b5a9d1f121e2e75"
   integrity sha512-NfpbDc0gdhDY+5x1gxlv3I/5EtGLuwfkQszy08HXQHCchFrdpyA3NcnM9C2OQK7992H7f+bGEUlzaRze6Iqrbw==
 
-"@xmtp/node-sdk@^4.1.1":
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.1.1.tgz#70b1dc5c4af35bbc5f90a77f9c0580adf85bbef0"
-  integrity sha512-V6hcP5n1Tlrm0kHnHeJf8njLeiVLdl3sCBaiahq5E/cY9Y2yagZqOwO1cFbNNGddm30rbCUzExtJ7Cb+mfyesA==
+"@xmtp/node-sdk@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.1.2.tgz#90550be9016bd0465a86b85d286a60acafb9e5ae"
+  integrity sha512-ydz8RoxFWxaXFGiGzatZ9xAO037nOT0K/isE3IKK7E+gMCmbCVhZBaV5Sy2luNk5ndTQs+LsDYu1SZGC632Ejg==
   dependencies:
     "@xmtp/content-type-group-updated" "^2.0.2"
     "@xmtp/content-type-primitives" "^2.0.2"
