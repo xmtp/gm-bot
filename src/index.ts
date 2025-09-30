@@ -30,7 +30,6 @@ agent.on("text", async (ctx) => {
   }
 });
 
-
 agent.on("group", async (ctx) => {
   console.log(`Received message in group: ${ctx.conversation.id}`);
 });
