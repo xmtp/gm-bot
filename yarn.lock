@@ -253,16 +253,16 @@
   dependencies:
     undici-types "~7.8.0"
 
-"@xmtp/agent-sdk@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-1.1.0.tgz#4929ca0aca57e938535c4fc772031e053325df61"
-  integrity sha512-RvI6u1Jgnvn1STfoMERl5V64SlpBzBbiZuIjYEBXTxwAG8lKtmgvMGgHqfLF+dGqlP3PbROfCYltPLh0cHV11w==
+"@xmtp/agent-sdk@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-1.1.2.tgz#f6f93e6bd126e7b0d6fb7a389159d5042575a5de"
+  integrity sha512-/olQ41+iRUuhvJaqnqH+OYpmnz0qg3I5yKgtP2avexsEhCXCShDYWD0c2Y90fS5wva5cwU/yQ+v3EmtG8sbn7A==
   dependencies:
     "@xmtp/content-type-reaction" "^2.0.2"
     "@xmtp/content-type-remote-attachment" "^2.0.2"
     "@xmtp/content-type-reply" "^2.0.2"
     "@xmtp/content-type-text" "^2.0.2"
-    "@xmtp/node-sdk" "^4.2.0"
+    "@xmtp/node-sdk" "^4.2.1"
     uint8arrays "^5.1.0"
     viem "^2.37.6"
 
@@ -312,20 +312,20 @@
   dependencies:
     "@xmtp/content-type-primitives" "^2.0.2"
 
-"@xmtp/node-bindings@1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.5.2.tgz#8b94e35e4bc28f7312ac686727b7761c12f8a0f0"
-  integrity sha512-7YsH4Z7KZaZpfuZ+/FpWFUPCNsOPTyKPgCODuzA5D913OdJEjzu2ueEqdf3muI6VIGux632dGSK0mJpZx3DNCw==
+"@xmtp/node-bindings@1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.5.3.tgz#268842772fb4c0ad0dacb197ab0bd481bd81bb15"
+  integrity sha512-Zlzp7GiZdvc56ZBBhX7lnZ+EDI+1l3SCTDEdB0zqi51baaSI2pMAmb7TtcOWBDQadsp1E8Hn4qz3OxztEHpJaw==
 
-"@xmtp/node-sdk@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.2.0.tgz#baea3ff62d99192bb1b90f830524855a30b38b07"
-  integrity sha512-/AIAkXMWJMV8zNvN02EllHf7pMyWcXQR5Xh7heHsipYFI8VY2nElp6w26swd5YTSKdDKolOW4HBUBshrbKFr5A==
+"@xmtp/node-sdk@^4.2.1":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.2.2.tgz#1a5c73ee87f48ff12edeca6a0a37b9c8672a7d38"
+  integrity sha512-3HV5n7m8qP+EcE12sDiOzuvEa1usuPasw8Shos/0ekty1YRdBjmgM+4AOVjsw7f0CGuBqc1V9XspXGuDq6/PEw==
   dependencies:
     "@xmtp/content-type-group-updated" "^2.0.2"
     "@xmtp/content-type-primitives" "^2.0.2"
     "@xmtp/content-type-text" "^2.0.2"
-    "@xmtp/node-bindings" "1.5.2"
+    "@xmtp/node-bindings" "1.5.3"
 
 "@xmtp/proto@^3.78.0":
   version "3.86.0"
