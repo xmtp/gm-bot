@@ -1,5 +1,5 @@
 import { Agent,  } from "@xmtp/agent-sdk";
-import { logDetails,  getTestUrl } from "@xmtp/agent-sdk/debug";
+import { logDetails,   } from "@xmtp/agent-sdk/debug";
 
 
 // Load .env file only in local development
