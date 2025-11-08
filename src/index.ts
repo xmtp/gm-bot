@@ -12,6 +12,9 @@ const agent = await Agent.createFromEnv({
 
 
 agent.on("text", async (ctx) => {
+  console.log(
+    `Received message in group (${ctx.conversation.id}): ${ctx.message.content} by ${await ctx.getSenderAddress()}`,
+  );
   console.log(JSON.stringify({
     type: "text_message",
     conversationId: ctx.conversation.id,
