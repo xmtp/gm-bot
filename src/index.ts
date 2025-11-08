@@ -23,7 +23,7 @@ agent.on("text", async (ctx) => {
     const messageContent = ctx.message.content;
     const senderAddress = await ctx.getSenderAddress();
     console.log(`Received message: ${messageContent} by ${senderAddress}`);
-    await ctx.sendText("gm");
+    await ctx.sendText(`gm from ${ctx.conversation.id}`);
   }
 });
 
