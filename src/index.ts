@@ -12,6 +12,13 @@ const agent = await Agent.createFromEnv({
 
 
 agent.on("text", async (ctx) => {
+  console.log(JSON.stringify({
+    type: "text_message",
+    conversationId: ctx.conversation.id,
+    content: ctx.message.content,
+    senderAddress: await ctx.getSenderAddress(),
+    timestamp: new Date().toISOString()
+  }));
   if (ctx.isDm()) {
     const messageContent = ctx.message.content;
     const senderAddress = await ctx.getSenderAddress();
