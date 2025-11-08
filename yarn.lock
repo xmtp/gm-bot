@@ -253,10 +253,10 @@
   dependencies:
     undici-types "~7.8.0"
 
-"@xmtp/agent-sdk@^1.1.11":
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-1.1.11.tgz#47bb2df9cbe6de1e2d872da3ffce49962a8f7a03"
-  integrity sha512-O4foDltTANG6but1kEgwSQ8o4Wxa15arO1vSUpFiyFAmQtZdeaXrCxLh5B2SvEg4B/YK9VxPdTfdHZ5F2362TA==
+"@xmtp/agent-sdk@^1.1.12":
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-1.1.13.tgz#5d1d6dc611882436cb429fa3679d569a87e68f74"
+  integrity sha512-GtCZrQs6ylPDolaCk/7XORVPQPykwcWTLeF98qx46xmwTBDSgqLLJUoTg9nowS3cK/TdNmFQbrYIKpx9j98lcQ==
   dependencies:
     "@xmtp/content-type-markdown" "^1.0.0"
     "@xmtp/content-type-reaction" "^2.0.2"
@@ -266,7 +266,7 @@
     "@xmtp/content-type-text" "^2.0.2"
     "@xmtp/content-type-transaction-reference" "^2.0.2"
     "@xmtp/content-type-wallet-send-calls" "^2.0.0"
-    "@xmtp/node-sdk" "^4.2.5"
+    "@xmtp/node-sdk" "^4.2.6"
     viem "^2.37.6"
 
 "@xmtp/content-type-group-updated@^2.0.2":
@@ -348,7 +348,7 @@
   resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.5.4.tgz#37995d203dc715f442da65d861f166763d1d72b4"
   integrity sha512-ffVCQhV8xQWxE1plPIeVMr0qFFB4/2FjYuprowKIfxLqOUqUR9w+otxZFfMZ+MGQ5j37SpFnPxUgDoOrNczUJQ==
 
-"@xmtp/node-sdk@^4.2.5":
+"@xmtp/node-sdk@^4.2.6":
   version "4.2.6"
   resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.2.6.tgz#6c03700cfb5a4792d5322987b0306c1e2171c5cc"
   integrity sha512-X1F+eKJuS8FwxcbpsNiaJ013R20kD7xZVpSPnhOhFE1Lb+G4w5eigiz2e5zh+PZVTlt1nKdqK3lRSSSBjMsGRg==
