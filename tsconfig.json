@@ -10,6 +10,8 @@
     "lib": ["ESNext"],
     "module": "Node16",
     "moduleResolution": "node16",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
