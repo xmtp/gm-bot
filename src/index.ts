@@ -1,36 +1,20 @@
 import { Agent } from "@xmtp/agent-sdk";
 import { getTestUrl, logDetails } from "@xmtp/agent-sdk/debug";
-import {
-  logSyncResults,
-  shouldSkipOldMessage,
-  startUpSync,
-} from "../utils/general.ts";
 
 // Load .env file only in local development
 if (process.env.NODE_ENV !== "production") process.loadEnvFile(".env");
 
 const agent = await Agent.createFromEnv({
+  disableDeviceSync: true,
   dbPath: (inboxId) =>
     (process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".") +
     `/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`,
 });
 
-const syncResults = await startUpSync(agent);
-const { startupTimeStamp, skippedMessagesCount, totalConversations } =
-  syncResults;
 
 console.log("Listening for messages...");
 agent.on("text", async (ctx) => {
-  if (
-    shouldSkipOldMessage(
-      ctx.message.sentAt.getTime(),
-      startupTimeStamp,
-      skippedMessagesCount,
-      totalConversations.length,
-    )
-  ) {
-    return;
-  }
+ 
   if (ctx.isDm()) {
     const messageContent = ctx.message.content;
     const senderAddress = await ctx.getSenderAddress();
@@ -45,7 +29,8 @@ agent.on("start", () => {
   console.log(`Address: ${agent.address}`);
   console.log(`🔗${getTestUrl(agent.client)}`);
   logDetails(agent.client).catch(console.error);
-  logSyncResults(syncResults);
 });
 
-await agent.start();
+await agent.start({
+  disableSync: true,
+});
