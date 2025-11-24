@@ -10,6 +10,9 @@
   "dependencies": {
     "@xmtp/agent-sdk": "^1.1.16"
   },
+  "resolutions": {
+    "@xmtp/node-sdk": "^4.5.0-rc1"
+  },
   "devDependencies": {
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
