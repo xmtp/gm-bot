@@ -1,4 +1,4 @@
-import { Agent } from "@xmtp/agent-sdk";
+import { Agent, MessageContext } from "@xmtp/agent-sdk";
 import { getTestUrl, logDetails } from "@xmtp/agent-sdk/debug";
 
 // Load .env file only in local development
@@ -11,17 +11,28 @@ const agent = await Agent.createFromEnv({
     `/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`,
 });
 
+ async function getMessageBody(ctx: MessageContext) {
+  try {
+    const messageContent = ctx.message.content as string;
+    const senderAddress = (await ctx.getSenderAddress()) as string;
 
-console.log("Listening for messages...");
+    const messageBody1 = `replying content: ${messageContent} sent by ${senderAddress} on ${ctx.message.sentAt.toISOString()} on converstion ${ctx.conversation.id}`;
+
+    console.log(messageBody1);
+    return messageBody1;
+  } catch (error) {
+    console.error("Error getting message body", error);
+    return "Error getting message body";
+  }
+}
+
 agent.on("text", async (ctx) => {
- 
+  const messageBody1 = await getMessageBody(ctx);
   if (ctx.isDm()) {
-    const messageContent = ctx.message.content;
-    const senderAddress = await ctx.getSenderAddress();
-    console.log(`Received message: ${messageContent} by ${senderAddress}`);
-    await ctx.sendText("gm");
-  } else if (ctx.isGroup() && ctx.message.content.includes("@gm"))
-    await ctx.sendText("gm");
+    await ctx.sendText(messageBody1);
+  } else if (ctx.isGroup() && ctx.message.content.includes("@echo")) {
+    await ctx.sendText(messageBody1);
+  }
 });
 
 agent.on("start", () => {
