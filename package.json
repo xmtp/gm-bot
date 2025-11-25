@@ -1,5 +1,5 @@
 {
-  "name": "gm-bot",
+  "name": "debug-bot",
   "private": true,
   "type": "module",
   "scripts": {
