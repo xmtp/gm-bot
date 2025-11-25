@@ -42,6 +42,4 @@ agent.on("start", () => {
   logDetails(agent.client).catch(console.error);
 });
 
-await agent.start({
-  disableSync: true,
-});
+await agent.start()
