@@ -8,10 +8,7 @@
     "dev": "tsx --watch src/index.ts"
   },
   "dependencies": {
-    "@xmtp/agent-sdk": "^1.1.16"
-  },
-  "resolutions": {
-    "@xmtp/node-sdk": "^4.5.0-rc1"
+    "@xmtp/agent-sdk": "1.1.16-rc.0"
   },
   "devDependencies": {
     "tsx": "^4.19.3",
