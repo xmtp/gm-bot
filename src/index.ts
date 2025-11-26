@@ -28,6 +28,7 @@ const agent = await Agent.createFromEnv({
 
 agent.on("text", async (ctx) => {
   const messageBody1 = await getMessageBody(ctx);
+  console.log("messageBody1", messageBody1);
   if (ctx.isDm()) {
     await ctx.sendText(messageBody1);
   } else if (ctx.isGroup() && ctx.message.content.includes("@echo")) {
