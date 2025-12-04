@@ -8,7 +8,7 @@ const agent = await Agent.createFromEnv({
   disableDeviceSync: true,
   dbPath: (inboxId) =>
     (process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".") +
-    `/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`,
+    `/data/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`,
 });
 
  async function getMessageBody(ctx: MessageContext) {
