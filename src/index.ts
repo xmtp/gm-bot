@@ -1,14 +1,20 @@
 import { Agent, MessageContext } from "@xmtp/agent-sdk";
 import { getTestUrl, logDetails } from "@xmtp/agent-sdk/debug";
 
-// Load .env file only in local development
-if (process.env.NODE_ENV !== "production") process.loadEnvFile(".env");
+// Load .env file only in local development (not on Railway)
+if (process.env.NODE_ENV !== "production" && !process.env.RAILWAY_VOLUME_MOUNT_PATH) {
+  try {
+    process.loadEnvFile(".env");
+  } catch {
+    // .env file is optional
+  }
+}
 
 const agent = await Agent.createFromEnv({
   disableDeviceSync: true,
   dbPath: (inboxId) =>
-    (process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".") +
-    `/data/${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`,
+    (process.env.RAILWAY_VOLUME_MOUNT_PATH ?? "./data/") +
+    `${process.env.XMTP_ENV}-${inboxId.slice(0, 8)}.db3`,
 });
 
  async function getMessageBody(ctx: MessageContext) {
