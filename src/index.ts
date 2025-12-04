@@ -15,11 +15,12 @@ const agent = await Agent.createFromEnv({
   try {
     const messageContent = ctx.message.content as string;
     const senderAddress = (await ctx.getSenderAddress()) as string;
+    const dateString = ctx.message.sentAt.toISOString();
 
-    const messageBody1 = `replying content: ${messageContent} sent by ${senderAddress} on ${ctx.message.sentAt.toISOString()} on converstion ${ctx.conversation.id}`;
+    const messageBody = `replying to a message sent by ${senderAddress} on ${dateString} on converstion ${ctx.conversation.id}. Content: "${messageContent}"`;
 
-    console.log(messageBody1);
-    return messageBody1;
+    console.log(messageBody);
+    return messageBody;
   } catch (error) {
     console.error("Error getting message body", error);
     return "Error getting message body";
