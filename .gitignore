@@ -9,6 +9,7 @@ coverage
 # misc
 .DS_Store
 *.pem
+data/
 
 # debug
 yarn-debug.log*
