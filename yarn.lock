@@ -253,10 +253,10 @@
   dependencies:
     undici-types "~7.16.0"
 
-"@xmtp/agent-sdk@1.1.16-rc.0":
-  version "1.1.16-rc.0"
-  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-1.1.16-rc.0.tgz#8c224ed05ed87625f85bfafd655a3b69e0e59114"
-  integrity sha512-WRpxf9J2lSvTWzqPtkZ7V9TLLKqIPz5B+xmdqBG8vLpZebhO7r2gdHRVbkLRAEQ0h4lvMnBNRDyzb9EgiasgVg==
+"@xmtp/agent-sdk@1.1.16":
+  version "1.1.16"
+  resolved "https://registry.yarnpkg.com/@xmtp/agent-sdk/-/agent-sdk-1.1.16.tgz#447ffae331abc2f2d3570579339fdcf196e92e92"
+  integrity sha512-g5pmSGwNcz9BsVXZ2EYNEcTCBStcmq+Gbwog7kMZJ9WqmxKFaaJ+jPbtoXk5H7XXmB1TD8Z8NfL/yZPe7kJdAw==
   dependencies:
     "@xmtp/content-type-markdown" "^1.0.0"
     "@xmtp/content-type-reaction" "^2.0.2"
@@ -266,7 +266,7 @@
     "@xmtp/content-type-text" "^2.0.2"
     "@xmtp/content-type-transaction-reference" "^2.0.2"
     "@xmtp/content-type-wallet-send-calls" "^2.0.0"
-    "@xmtp/node-sdk" "4.5.0-rc1"
+    "@xmtp/node-sdk" "4.3.1"
     viem "^2.37.6"
 
 "@xmtp/content-type-group-updated@^2.0.2":
@@ -343,20 +343,20 @@
   dependencies:
     "@xmtp/content-type-primitives" "^2.0.2"
 
-"@xmtp/node-bindings@1.6.1-rc3":
-  version "1.6.1-rc3"
-  resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.6.1-rc3.tgz#b286e73d2709cf5940a3df6ec6778b88fda810e7"
-  integrity sha512-5rYu5uGjGQaW+Q9RT+LPhxRdwOqOqWNzlfNR6+SuammXryTzw5j2uhw7r6Kh4hrsFZs09oZ1ZFGm5KxwtBigGA==
+"@xmtp/node-bindings@1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.6.2.tgz#b68021341a0a3637223d518d55015e6a5b746ddf"
+  integrity sha512-7u1p/VE9dNzT+g3ulb/wEwG4OtYHsZJRJvUbqNkb/8P0/kse0rcmxljDfSX7RhsnAikzGhZSULl2tAWfnbXg9A==
 
-"@xmtp/node-sdk@4.5.0-rc1":
-  version "4.5.0-rc1"
-  resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.5.0-rc1.tgz#0093134efc29cfbf525e2eb4e34a2af0bc9cba53"
-  integrity sha512-b5AyOWO00Z4ubUqaDn8G9xuA4OF6PQoCpU5r2iFnX04+gNLlznSvG0zTAn1lR9GeL5aJU6YOZtXf0fRmmTzCpQ==
+"@xmtp/node-sdk@4.3.1", "@xmtp/node-sdk@4.5.0-rc3":
+  version "4.5.0-rc3"
+  resolved "https://registry.yarnpkg.com/@xmtp/node-sdk/-/node-sdk-4.5.0-rc3.tgz#f7dd2142074f4ab101cedb4e2e37ef3a84429c8b"
+  integrity sha512-2uqPVm64PME7G2AI5c/LW5Bu128n9/qT6XrDfcgS30Tjrohb8dSQSedS8t7BlWFZ5LdfqmZZdssNfOQ2vUReqA==
   dependencies:
     "@xmtp/content-type-group-updated" "^2.0.2"
     "@xmtp/content-type-primitives" "^2.0.2"
     "@xmtp/content-type-text" "^2.0.2"
-    "@xmtp/node-bindings" "1.6.1-rc3"
+    "@xmtp/node-bindings" "1.6.2"
 
 "@xmtp/proto@^3.78.0":
   version "3.87.0"
