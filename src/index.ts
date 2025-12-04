@@ -1,8 +1,14 @@
 import { Agent, MessageContext } from "@xmtp/agent-sdk";
 import { getTestUrl, logDetails } from "@xmtp/agent-sdk/debug";
 
-// Load .env file only in local development
-if (process.env.NODE_ENV !== "production") process.loadEnvFile(".env");
+// Load .env file only in local development (not on Railway)
+if (process.env.NODE_ENV !== "production" && !process.env.RAILWAY_VOLUME_MOUNT_PATH) {
+  try {
+    process.loadEnvFile(".env");
+  } catch {
+    // .env file is optional
+  }
+}
 
 const agent = await Agent.createFromEnv({
   disableDeviceSync: true,
