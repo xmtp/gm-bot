@@ -23,7 +23,7 @@ const agent = await Agent.createFromEnv({
     const senderAddress = (await ctx.getSenderAddress()) as string;
     const dateString = ctx.message.sentAt.toISOString();
 
-    const messageBody = `replying to a message sent by ${senderAddress} on ${dateString} on converstion ${ctx.conversation.id}. Content: "${messageContent}"`;
+    const messageBody = `replying from MAC to a message sent by ${senderAddress} on ${dateString} on converstion ${ctx.conversation.id}. Content: "${messageContent}"`;
 
     console.log(messageBody);
     return messageBody;
