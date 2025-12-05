@@ -343,10 +343,10 @@
   dependencies:
     "@xmtp/content-type-primitives" "^2.0.2"
 
-"@xmtp/node-bindings@1.6.2", "@xmtp/node-bindings@1.6.4-rc2":
-  version "1.6.4-rc2"
-  resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.6.4-rc2.tgz#236102d954ea62d2e429156c34f2966b773ee784"
-  integrity sha512-s7OCj/qo9lF7eUjaBPUpL2fm8I9wOC/2n/MpHdTbT7cJ+HaSLw19mCZOWA5QMP7J210X3kiHHtP5GzBg34OIMw==
+"@xmtp/node-bindings@1.6.2", "@xmtp/node-bindings@1.6.6":
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/@xmtp/node-bindings/-/node-bindings-1.6.6.tgz#7badfdc69f3db755a02e5d579c167c836a85e799"
+  integrity sha512-NIN0LiXvkKKhXaHK2bSfWM/fC0BiRim9ryk+MifISoASy3JcFYeqpxnW5pceYxGdx1HJ2/Sz/luwEIplYCxlPw==
 
 "@xmtp/node-sdk@4.3.1", "@xmtp/node-sdk@4.5.0-rc3":
   version "4.5.0-rc3"
