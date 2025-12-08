@@ -5,7 +5,9 @@
   "scripts": {
     "build": "tsc",
     "start": "tsx src/index.ts",
-    "dev": "tsx --watch src/index.ts"
+    "dev": "tsx --watch src/index.ts",
+    "debug-dm": "tsx scripts/debug-dm.ts",
+    "gen:keys": "npx @xmtp/cli keys "
   },
   "dependencies": {
     "@xmtp/agent-sdk": "1.1.16"
