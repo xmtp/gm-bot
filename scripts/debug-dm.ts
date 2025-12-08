@@ -14,20 +14,16 @@ async function waitForResponse(
 ) {
   const stream = await agent.client.conversations.streamAllMessages();
   const startTime = performance.now();
-  let timeoutId: NodeJS.Timeout | null = null;
-  let done = false;
 
   const responsePromise = (async () => {
     try {
       for await (const msg of stream) {
-        if (done) break;
         if (
           msg.conversationId !== conversationId ||
           msg.senderInboxId.toLowerCase() === agent.client.inboxId.toLowerCase()
         ) {
           continue;
         }
-        done = true;
         return msg;
       }
       return null;
@@ -41,6 +37,7 @@ async function waitForResponse(
   await conversation.send(message);
   const sendTime = performance.now() - startTime;
 
+  let timeoutId = null;
   try {
     const timeoutPromise = new Promise<null>((_, reject) => {
       timeoutId = setTimeout(
@@ -50,15 +47,12 @@ async function waitForResponse(
     });
 
     const response = await Promise.race([responsePromise, timeoutPromise]);
-    const responseTime = performance.now() - startTime;
-
     return {
       sendTime,
-      responseTime,
+      responseTime: performance.now() - startTime,
       responseMessage: response,
     };
   } catch {
-    done = true;
     return {
       sendTime,
       responseTime: performance.now() - startTime,
@@ -66,7 +60,6 @@ async function waitForResponse(
     };
   } finally {
     if (timeoutId) clearTimeout(timeoutId);
-    done = true;
   }
 }
 
@@ -98,7 +91,7 @@ async function main() {
   }
 }
 
-main().catch((error: unknown) => {
+main().catch((error) => {
   console.error("Error:", error instanceof Error ? error.message : String(error));
   process.exit(1);
 });
