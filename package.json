@@ -5,15 +5,21 @@
   "scripts": {
     "build": "tsc",
     "start": "tsx src/index.ts",
-    "dev": "tsx --watch src/index.ts",
+    "start:pm2": "pm2 start ecosystem.config.cjs",
+    "stop:pm2": "pm2 stop gm-bot",
+    "restart:pm2": "pm2 restart gm-bot",
+    "logs:pm2": "pm2 logs gm-bot",
+    "dev": "pm2 start ecosystem.config.cjs",
     "debug-dm": "tsx scripts/debug-dm.ts",
     "gen:keys": "npx @xmtp/cli keys "
   },
   "dependencies": {
-    "@xmtp/agent-sdk": "1.1.16"
+    "@xmtp/agent-sdk": "1.1.16",
+    "dotenv": "^17.2.3"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "pm2": "^6.0.14",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   },
