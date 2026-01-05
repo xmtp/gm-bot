@@ -9,7 +9,7 @@
     "stop:pm2": "pm2 stop gm-bot",
     "restart:pm2": "pm2 restart gm-bot",
     "logs:pm2": "pm2 logs gm-bot",
-    "dev": "pm2 start ecosystem.config.cjs",
+    "dev": "pm2 start ecosystem.config.cjs; pm2 logs gm-bot",
     "debug-dm": "tsx scripts/debug-dm.ts",
     "gen:keys": "npx @xmtp/cli keys "
   },
