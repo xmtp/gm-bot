@@ -20,9 +20,5 @@
   },
   "engines": {
     "node": ">=22"
-  },
-  "resolutions": {
-    "@xmtp/node-sdk": "4.5.0",
-    "@xmtp/node-bindings": "1.6.6"
   }
 }
