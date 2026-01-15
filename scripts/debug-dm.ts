@@ -64,15 +64,45 @@ async function waitForResponse(
 }
 
 async function main() {
-  const target = process.argv[2];
+  
+  let target: string | undefined;
+  const args = process.argv.slice(2);
+  
+  for (const arg of args) {
+    if (arg.startsWith("--target=")) {
+      target = arg.split("=")[1];
+      break;
+    } else if (arg === "--target" && args.indexOf(arg) + 1 < args.length) {
+      target = args[args.indexOf(arg) + 1];
+      break;
+    } else if (!arg.startsWith("--")) {
+      target = arg;
+      break;
+    }
+  }
+  
+  console.log("Parsed target:", target);
+  
   if (!target) {
-    console.error("Error: Target address required");
+    console.error("Error: Target address required. Use --target=<address> or pass address as argument");
+    process.exit(1);
+  }
+  
+  if (!target.startsWith("0x")) {
+    console.error("Error: Target must be a valid Ethereum address starting with 0x");
     process.exit(1);
   }
 
+  console.log("Creating agent...");
   const agent = await Agent.createFromEnv({});
+  console.log("Agent created, address:", agent.address);
+  
   try {
+    console.log("Creating DM with target:", target);
     const dm = await agent.createDmWithAddress(target as `0x${string}`);
+    console.log("DM created, conversation ID:", dm.id);
+    
+    console.log("Waiting for response...");
     const result = await waitForResponse(agent, dm, dm.id, MESSAGE);
 
     console.log(`✅ Message sent (${result.sendTime.toFixed(2)}ms)`);
@@ -85,7 +115,12 @@ async function main() {
     } else {
       console.log(`❌ No response within ${TIMEOUT_SECONDS}s`);
     }
+  } catch (error) {
+    console.error("Error in main:", error instanceof Error ? error.message : String(error));
+    console.error("Stack:", error instanceof Error ? error.stack : "No stack");
+    throw error;
   } finally {
+    console.log("Stopping agent...");
     await agent.stop();
     process.exit(0);
   }
