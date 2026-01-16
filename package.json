@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@xmtp/agent-sdk": "1.2.4-dev.f53662f",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "pm2": "^5.3.0"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",

@@ -2,6 +2,11 @@ import "dotenv/config";
 import { Agent, MessageContext } from "@xmtp/agent-sdk";
 import { getTestUrl, logDetails } from "@xmtp/agent-sdk/debug";
 
+// Immediate synchronous log - FIRST THING that runs (after imports)
+console.log(
+  `[RESTART] GM bot starting - PID: ${process.pid} at ${new Date().toISOString()}`,
+);
+
 const agent = await Agent.createFromEnv({
   disableDeviceSync: true,
   dbPath: (inboxId) =>
@@ -33,6 +38,16 @@ agent.on("text", async (ctx) => {
   } else if (ctx.isGroup() && ctx.message.content.includes("@echo")) {
     await ctx.sendText(messageBody1);
   }
+});
+
+// Handle agent-level unhandled errors
+agent.on("unhandledError", (error) => {
+  console.error("GM bot fatal error:", error);
+  if (error instanceof Error) {
+    console.error("Error stack:", error.stack);
+  }
+  console.error("Exiting process - PM2 will restart");
+  process.exit(1);
 });
 
 agent.on("start", () => {
