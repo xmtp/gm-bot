@@ -10,7 +10,7 @@
     "gen:keys": "npx @xmtp/cli keys "
   },
   "dependencies": {
-    "@xmtp/agent-sdk": "1.1.16",
+    "@xmtp/agent-sdk": "1.2.4-dev.f53662f",
     "dotenv": "^17.2.3"
   },
   "devDependencies": {
