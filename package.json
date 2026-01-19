@@ -10,11 +10,11 @@
     "gen:keys": "npx @xmtp/cli keys "
   },
   "dependencies": {
-    "@xmtp/agent-sdk": "1.2.4-dev.f53662f",
-    "dotenv": "^17.2.3",
-    "pm2": "^5.3.0"
+    "@xmtp/agent-sdk": "1.2.5-rc1"
   },
   "devDependencies": {
+    "pm2": "^5.3.0",
+    "dotenv": "^17.2.3",
     "@types/node": "^24.10.1",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
